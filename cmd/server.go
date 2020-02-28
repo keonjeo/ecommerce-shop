@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"context"
-	"fmt"
+	"log"
 
+	"github.com/dankobgd/ecommerce-shop/apiv1"
 	"github.com/dankobgd/ecommerce-shop/app"
 	"github.com/spf13/cobra"
 )
@@ -21,20 +21,43 @@ func init() {
 }
 
 func serverCmdFn(command *cobra.Command, args []string) error {
-	fmt.Println("RUN THE SERVER")
-
-	// appOptions = []AppOption{"", "", ""}
 	// server, err := app.NewServer()
-	// api := apiv1.Init(server, server.AppOptions, server.Router)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	api := apiv1.New()
+	// defer server.Shutdown()
+
+	// api := apiv1.Init(server.Router)
+
+	// serverErr = server.Start()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
 	server, err := app.NewServer()
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 
-	server.Start()
-	defer server.Stop(context.Background())
+	api := apiv1.Init(server.Router)
 
-	return nil
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go func() {
+		oscall := <-c
+		log.Printf("system call:%+v", oscall)
+		cancel()
+	}()
+
+	if err := serve(ctx); err != nil {
+		log.Printf("failed to serve:+%v\n", err)
+	}
+
+	serverErr = server.Start(); serverErr != nil {
+		log.Printf("failed to serve:+%v\n", err)
+	}	
 }

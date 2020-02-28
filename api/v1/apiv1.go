@@ -1,20 +1,16 @@
 package apiv1
 
 import (
-	"fmt"
+	"net/http"
 
 	"github.com/go-chi/chi"
 )
 
 // Init inits the API
-func Init() *chi.Mux {
-	r := chi.NewRouter()
-
+func Init(r chi.Router) {
 	r.Mount("/api/v1/", subrouter())
 	r.Mount("/api/v1/users", subrouter())
 	r.Mount("/api/v1/users/{user_id:[A-Za-z0-9]+}", subrouter())
-
-	return r
 }
 
 func subrouter() http.Handler {
