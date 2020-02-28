@@ -7,8 +7,8 @@ import (
 )
 
 // Init inits the API
-func Init(r chi.Router) {
-	r.Mount("/api/v1/", subrouter())
+func Init(r *chi.Mux) {
+	r.Mount("/api/v1", subrouter())
 	r.Mount("/api/v1/users", subrouter())
 	r.Mount("/api/v1/users/{user_id:[A-Za-z0-9]+}", subrouter())
 }

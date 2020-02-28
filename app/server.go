@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dankobgd/ecommerce-shop/apiv1"
 	"github.com/dankobgd/ecommerce-shop/store"
 	"github.com/go-chi/chi"
 	"github.com/rs/cors"
@@ -25,11 +24,10 @@ type Server struct {
 
 // NewServer ...
 func NewServer() (*Server, error) {
-	router := chi.NewRouter()
-	apiv1.Init(router)
+	r := chi.NewRouter()
 
 	s := &Server{
-		Router: router,
+		Router: r,
 	}
 
 	// s.Log = log.NewLogger()
