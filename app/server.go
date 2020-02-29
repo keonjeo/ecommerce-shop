@@ -37,8 +37,6 @@ func NewServer() (*Server, error) {
 
 // Start runs the HTTP server
 func (s *Server) Start(ctx context.Context) (err error) {
-	var handler http.Handler = s.Router
-
 	// TODO: read from cfg
 	corsWrapper := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
@@ -50,7 +48,7 @@ func (s *Server) Start(ctx context.Context) (err error) {
 		Debug:            false,
 	})
 
-	handler = corsWrapper.Handler(handler)
+	handler := corsWrapper.Handler(s.Router)
 
 	// if ratelimit set it here...
 

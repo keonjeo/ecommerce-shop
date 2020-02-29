@@ -20,6 +20,7 @@ func New(options ...appOption) *App {
 	return app
 }
 
+// Srv ...
 func (a *App) Srv() *Server {
 	return a.srv
 }
