@@ -13,7 +13,7 @@ import (
 type AppConfig struct {
 	Host string `env:"HOST" envDefault:"127.0.0.1"`
 	Port int    `env:"PORT" envDefault:"3001"`
-	ENV  bool   `env:"ENV" envDefault:development`
+	ENV  string `env:"ENV" envDefault:development`
 }
 
 // DatabaseConfig ...
