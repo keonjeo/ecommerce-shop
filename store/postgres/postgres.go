@@ -14,16 +14,13 @@ type PGStore struct {
 	store.Store
 }
 
-func (s PGStore) Connect() {
+// New ...
+func (s PGStore) New() (*PGStore, error) {
 	db, err := sqlx.Connect("postgres", "user=foo dbname=bar sslmode=disable")
 	if err != nil {
 		log.Fatalln(err)
+		return nil, err
 	}
-	db.Query("SELECT 1;")
-}
 
-func (s PGStore) Close() {}
-
-func (s PGStore) New() {
-
+	return &PGStore{db: db}, nil
 }
