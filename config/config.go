@@ -64,22 +64,13 @@ type Config struct {
 }
 
 func (c Config) isDev() bool {
-	if c.App.ENV == "development" {
-		return true
-	}
-	return false
+	return c.App.ENV == "development"
 }
 func (c Config) isProd() bool {
-	if c.App.ENV == "production" {
-		return true
-	}
-	return false
+	return c.App.ENV == "production"
 }
 func (c Config) isTest() bool {
-	if c.App.ENV == "test" {
-		return true
-	}
-	return false
+	return c.App.ENV == "test"
 }
 
 func loadEnvironment() {
