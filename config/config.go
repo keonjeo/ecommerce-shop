@@ -13,7 +13,7 @@ import (
 type AppConfig struct {
 	Host string `env:"HOST" envDefault:"127.0.0.1"`
 	Port int    `env:"PORT" envDefault:"3001"`
-	ENV  string `env:"ENV" envDefault:development`
+	ENV  string `env:"ENV" envDefault:"development"`
 }
 
 // DatabaseConfig ...
@@ -27,15 +27,15 @@ type DatabaseConfig struct {
 
 // AuthConfig ...
 type AuthConfig struct {
-	VerificationRequired  bool   `env:"VERIFICATION_REQUIRED" envDefault:false`
-	ResetPasswordValidFor int    `env:"RESET_PASSWORD_VALID_FOR" envDefault:9999`
-	AccessTokenSecret     string `env:"ACCESS_TOKEN_SECRET" envDefault:xxxxx`
-	RefreshTokenSecret    string `env:"REFRESH_TOKEN_SECRET" envDefault:xxxxx`
+	VerificationRequired  bool   `env:"VERIFICATION_REQUIRED" envDefault:"false"`
+	ResetPasswordValidFor int    `env:"RESET_PASSWORD_VALID_FOR" envDefault:"9999"`
+	AccessTokenSecret     string `env:"ACCESS_TOKEN_SECRET" envDefault:"xxxxx"`
+	RefreshTokenSecret    string `env:"REFRESH_TOKEN_SECRET" envDefault:"xxxxx"`
 }
 
 // EmailConfig ...
 type EmailConfig struct {
-	Enabled   bool   `env:"EMAIL_ENABLED" envDefault:false`
+	Enabled   bool   `env:"EMAIL_ENABLED" envDefault:"false"`
 	Transport string `env:"EMAIL_TRANSPORT" envDefault:"sendgrid"`
 	From      string `env:"EMAIL_FROM" envDefault:"dp24031995@gmail.com"`
 	Host      string `env:"EMAIL_HOST"`
@@ -46,12 +46,12 @@ type EmailConfig struct {
 
 // CookieConfig ...
 type CookieConfig struct {
-	Name     string    `env:"COOKIE_NAME", default:"cookie"`
-	Path     string    `env:"COOKIE_PATH" default:"/"`
-	Secret   string    `env:"COOKIE_SECRET" default:"xxxxx"`
-	HTTPOnly bool      `env:"COOKIE_HTTP_ONLY" default:false`
-	Secure   bool      `env:"COOKIE_SECURE" default:false`
-	MaxAge   time.Time `env:"COOKIE_MAX_AGE" default:0`
+	Name     string    `env:"COOKIE_NAME" envDefault:"cookie"`
+	Path     string    `env:"COOKIE_PATH" envDefault:"/"`
+	Secret   string    `env:"COOKIE_SECRET" envDefault:"xxxxx"`
+	HTTPOnly bool      `env:"COOKIE_HTTP_ONLY" envDefault:"false"`
+	Secure   bool      `env:"COOKIE_SECURE" envDefault:"false"`
+	MaxAge   time.Time `env:"COOKIE_MAX_AGE" envDefault:"0"`
 }
 
 // Config represents the app config
