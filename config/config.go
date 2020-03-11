@@ -18,11 +18,11 @@ type AppConfig struct {
 
 // DatabaseConfig ...
 type DatabaseConfig struct {
-	DBHost string `env:"DB_HOST"`
-	DBURI  string `env:"DB_URI"`
-	DBName string `env:"DB_NAME"`
-	DBUser string `env:"DB_USER"`
-	DBPass string `env:"DB_PASSWORD"`
+	PostgresHost string `env:"POSTGRES_HOST"`
+	PostgresURI  string `env:"POSTGRES_URI"`
+	PostgresDB   string `env:"POSTGRES_DB"`
+	PostgresUser string `env:"POSTGRES_USER"`
+	PostgresPass string `env:"POSTGRES_PASSWORD"`
 }
 
 // AuthConfig ...
@@ -74,7 +74,7 @@ func (c Config) isTest() bool {
 }
 
 func loadEnvironment() {
-	err := godotenv.Load("../.env")
+	err := godotenv.Load("../env/.env")
 	if err != nil {
 		log.Fatal("error loading .env file")
 	}

@@ -1,0 +1,55 @@
+version: "3.7"
+
+services:
+  # Database
+  db:
+    image: postgres:alpine
+    restart: always
+    container_name: db
+    networks:
+      - net
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=ecommerce
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - /home/docker/volumes/postgres:/var/lib/postgresql/data
+
+  # Database client
+  adminer:
+    image: adminer
+    restart: always
+    container_name: adminer
+    networks:
+      - net
+    ports:
+      - 8080:8080
+    environment:
+      - ADMINER_DESIGN=mvt
+    depends_on:
+      - db
+
+  # Migrate database
+  migrate:
+    image: migrate/migrate
+    container_name: migrate
+    networks:
+      - net
+    volumes:
+      - ./migrations:/migrations
+      - ./scripts/wait-for-it.sh:/wait-for-it.sh
+    command:
+      [
+        "-path",
+        "/migrations",
+        "-database",
+        "postgres://postgres:postgres@db:5432/ecommerce?sslmode=disable",
+        "up",
+      ]
+    depends_on:
+      - db
+
+networks:
+  net:
