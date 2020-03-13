@@ -29,8 +29,8 @@ func (s PGUserStore) GetAll() ([]*model.User, error) {
 	return []*model.User{}, nil
 }
 
-// FindByEmail ...
-func (s PGUserStore) FindByEmail(email string) (*model.User, error) {
+// GetByEmail ...
+func (s PGUserStore) GetByEmail(email string) (*model.User, error) {
 	return &model.User{}, nil
 }
 
