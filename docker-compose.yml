@@ -4,8 +4,8 @@ services:
   # Database
   database:
     image: postgres:alpine
-    restart: always
     container_name: database
+    restart: always
     ports:
       - 5432:5432
     environment:
@@ -18,8 +18,8 @@ services:
   # Database client
   adminer:
     image: adminer
-    restart: always
     container_name: adminer
+    restart: always
     ports:
       - 8080:8080
     environment:

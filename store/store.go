@@ -15,7 +15,7 @@ type UserStore interface {
 	Save(*model.User) (*model.User, error)
 	Get(id int) (*model.User, error)
 	GetAll() ([]*model.User, error)
-	FindByEmail(email string) (*model.User, error)
+	GetByEmail(email string) (*model.User, error)
 	Update(id int, u *model.User) (*model.User, error)
 	Delete(id int) (*model.User, error)
 }
