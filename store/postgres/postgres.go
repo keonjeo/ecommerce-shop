@@ -3,10 +3,9 @@ package postgres
 import (
 	"log"
 
+	"github.com/dankobgd/ecommerce-shop/store"
 	_ "github.com/jackc/pgx" // pg driver
 	"github.com/jmoiron/sqlx"
-
-	"github.com/dankobgd/ecommerce-shop/store"
 )
 
 // PGStore ...
@@ -15,13 +14,18 @@ type PGStore struct {
 	store.Store
 }
 
-// New ...
-func (s PGStore) New() (*PGStore, error) {
-	db, err := sqlx.Connect("postgres", "host=database port=5432 user=postgres password=postgres dbname=ecommerce sslmode=disable")
+// Connect establishes connection to postgres db
+func Connect() (*sqlx.DB, error) {
+	db, err := sqlx.Connect("postgres", "host=database port=5432 user=test password=test dbname=ecommerce sslmode=disable")
 	if err != nil {
 		log.Fatalln(err)
 		return nil, err
 	}
 
+	return db, nil
+}
+
+// New initializes postgres based store
+func (s PGStore) New(db *sqlx.DB) (*PGStore, error) {
 	return &PGStore{db: db}, nil
 }

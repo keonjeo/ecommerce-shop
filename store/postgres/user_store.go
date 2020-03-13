@@ -8,10 +8,7 @@ import (
 // PGUserStore ...
 type PGUserStore struct {
 	PGStore
-}
-
-func newPGUserStore() store.UserStore {
-	return &PGUserStore{}
+	store.UserStore
 }
 
 // Save ...
