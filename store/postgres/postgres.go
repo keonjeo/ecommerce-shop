@@ -8,8 +8,8 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-// PGStore ...
-type PGStore struct {
+// PgStore ...
+type PgStore struct {
 	db *sqlx.DB
 	store.Store
 }
@@ -26,6 +26,6 @@ func Connect() (*sqlx.DB, error) {
 }
 
 // New initializes postgres based store
-func (s PGStore) New(db *sqlx.DB) (*PGStore, error) {
-	return &PGStore{db: db}, nil
+func (s PgStore) New(db *sqlx.DB) (*PgStore, error) {
+	return &PgStore{db: db}, nil
 }

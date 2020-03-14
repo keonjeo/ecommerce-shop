@@ -5,38 +5,41 @@ import (
 	"github.com/dankobgd/ecommerce-shop/store"
 )
 
-// PGUserStore ...
-type PGUserStore struct {
-	PGStore
-	store.UserStore
+// PgUserStore ...
+type PgUserStore struct {
+	PgStore
+}
+
+func newPgUserStore(pgst PgStore) store.UserStore {
+	return &PgUserStore{pgst}
 }
 
 // Save ...
-func (s PGUserStore) Save(*model.User) (*model.User, error) {
+func (s PgUserStore) Save(*model.User) (*model.User, error) {
 	return &model.User{}, nil
 }
 
 // Get ...
-func (s PGUserStore) Get(id int) (*model.User, error) {
+func (s PgUserStore) Get(id int) (*model.User, error) {
 	return &model.User{}, nil
 }
 
 // GetAll ...
-func (s PGUserStore) GetAll() ([]*model.User, error) {
+func (s PgUserStore) GetAll() ([]*model.User, error) {
 	return []*model.User{}, nil
 }
 
 // GetByEmail ...
-func (s PGUserStore) GetByEmail(email string) (*model.User, error) {
+func (s PgUserStore) GetByEmail(email string) (*model.User, error) {
 	return &model.User{}, nil
 }
 
 // Update ...
-func (s PGUserStore) Update(id int, u *model.User) (*model.User, error) {
+func (s PgUserStore) Update(id int, u *model.User) (*model.User, error) {
 	return &model.User{}, nil
 }
 
 // Delete ...
-func (s PGUserStore) Delete(id int) (*model.User, error) {
+func (s PgUserStore) Delete(id int) (*model.User, error) {
 	return &model.User{}, nil
 }
