@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/dankobgd/ecommerce-shop/apiv1"
+	api "github.com/dankobgd/ecommerce-shop/api/v1"
 	"github.com/dankobgd/ecommerce-shop/app"
 	"github.com/spf13/cobra"
 )
@@ -30,7 +30,7 @@ func serverCmdFn(command *cobra.Command, args []string) error {
 		log.Fatal(err)
 	}
 
-	apiv1.Init(server.Router)
+	api.Init(server.Router)
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
