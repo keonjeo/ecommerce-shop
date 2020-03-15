@@ -3,9 +3,11 @@ version: "3.7"
 services:
   # Golang app
   app:
-    build: ./docker/app
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
     container_name: app
-    restart: on-failure
+    restart: always
     ports:
       - 3001:3001
     networks:
@@ -15,7 +17,9 @@ services:
 
   # Database
   database:
-    image: postgres:alpine
+    build:
+      context: .
+      dockerfile: ./docker/database/Dockerfile
     container_name: database
     restart: always
     ports:
@@ -31,7 +35,9 @@ services:
 
   # Database client
   adminer:
-    image: adminer
+    build:
+      context: .
+      dockerfile: ./docker/adminer/Dockerfile
     container_name: adminer
     restart: always
     ports:

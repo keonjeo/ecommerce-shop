@@ -74,7 +74,7 @@ func (c Config) isTest() bool {
 }
 
 func loadEnvironment() {
-	err := godotenv.Load("../env/.env")
+	err := godotenv.Load("../.env")
 	if err != nil {
 		log.Fatal("error loading .env file")
 	}

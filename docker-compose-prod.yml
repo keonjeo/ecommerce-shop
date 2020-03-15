@@ -14,7 +14,7 @@ services:
         "-path",
         "/migrations",
         "-database",
-        "postgres://postgres:postgres@database:5432/ecommerce?sslmode=disable",
+        "postgres://test:test@database:5432/ecommerce?sslmode=disable",
         "up",
       ]
     depends_on:
