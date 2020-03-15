@@ -9,6 +9,7 @@ import (
 
 	api "github.com/dankobgd/ecommerce-shop/api/v1"
 	"github.com/dankobgd/ecommerce-shop/app"
+	"github.com/dankobgd/ecommerce-shop/store/postgres"
 	"github.com/spf13/cobra"
 )
 
@@ -45,6 +46,20 @@ func serverCmdFn(command *cobra.Command, args []string) error {
 	if serverErr := server.Start(ctx); serverErr != nil {
 		log.Printf("failed to serve:+%v\n", err)
 	}
+
+	// test
+	log.Printf("STARTED CONNECTING")
+	db, err := postgres.Connect()
+	if err != nil {
+		log.Fatalln(err)
+		return err
+	}
+
+	res, _ := db.Query("select * from user;")
+
+	log.Printf("result: %v", res)
+	log.Printf("END CONNECTING")
+	// test
 
 	return nil
 }

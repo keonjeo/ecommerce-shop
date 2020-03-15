@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/dankobgd/ecommerce-shop/store"
-	_ "github.com/jackc/pgx" // pg driver
+	_ "github.com/jackc/pgx/stdlib" // pg driver
 	"github.com/jmoiron/sqlx"
 )
 
@@ -16,7 +16,7 @@ type PgStore struct {
 
 // Connect establishes connection to postgres db
 func Connect() (*sqlx.DB, error) {
-	db, err := sqlx.Connect("postgres", "host=database port=5432 user=test password=test dbname=ecommerce sslmode=disable")
+	db, err := sqlx.Connect("pgx", "host=localhost user=test password=test dbname=ecommerce sslmode=disable")
 	if err != nil {
 		log.Fatalln(err)
 		return nil, err
@@ -26,6 +26,6 @@ func Connect() (*sqlx.DB, error) {
 }
 
 // New initializes postgres based store
-func (s PgStore) New(db *sqlx.DB) (*PgStore, error) {
-	return &PgStore{db: db}, nil
+func (s PgStore) New(db *sqlx.DB) *PgStore {
+	return &PgStore{db: db}
 }

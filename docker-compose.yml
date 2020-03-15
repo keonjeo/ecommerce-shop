@@ -1,6 +1,18 @@
 version: "3.7"
 
 services:
+  # Golang app
+  app:
+    build: ./docker/app
+    container_name: app
+    restart: on-failure
+    ports:
+      - 3001:3001
+    networks:
+      - net
+    depends_on:
+      - database
+
   # Database
   database:
     image: postgres:alpine
@@ -14,6 +26,8 @@ services:
       - POSTGRES_PASSWORD=test
     volumes:
       - /home/docker/volumes/postgres:/var/lib/postgresql/data
+    networks:
+      - net
 
   # Database client
   adminer:
@@ -24,5 +38,11 @@ services:
       - 8080:8080
     environment:
       - ADMINER_DESIGN=mvt
+    networks:
+      - net
     depends_on:
       - database
+
+networks:
+  net:
+    driver: bridge
