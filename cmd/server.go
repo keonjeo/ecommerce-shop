@@ -1,11 +1,7 @@
 package cmd
 
 import (
-	"context"
 	"log"
-	"os"
-	"os/signal"
-	"syscall"
 
 	api "github.com/dankobgd/ecommerce-shop/api/v1"
 	"github.com/dankobgd/ecommerce-shop/app"
@@ -33,33 +29,21 @@ func serverCmdFn(command *cobra.Command, args []string) error {
 
 	api.Init(server.Router)
 
-	done := make(chan os.Signal, 1)
-	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-
-	ctx, cancel := context.WithCancel(context.Background())
-
-	go func() {
-		log.Printf("system call:%+v", <-done)
-		cancel()
-	}()
-
-	if serverErr := server.Start(ctx); serverErr != nil {
-		log.Printf("failed to serve:+%v\n", err)
+	if srvErr := server.Start(); srvErr != nil {
+		log.Fatalf("could not start the server: %v\n", srvErr)
 	}
 
-	// test
+	// #################################################
 	log.Printf("STARTED CONNECTING")
 	db, err := postgres.Connect()
 	if err != nil {
 		log.Fatalln(err)
 		return err
 	}
-
 	res, _ := db.Query("select * from user;")
-
 	log.Printf("result: %v", res)
 	log.Printf("END CONNECTING")
-	// test
+	// #################################################
 
 	return nil
 }

@@ -4,6 +4,9 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/dankobgd/ecommerce-shop/store"
@@ -36,7 +39,7 @@ func NewServer() (*Server, error) {
 }
 
 // Start runs the HTTP server
-func (s *Server) Start(ctx context.Context) (err error) {
+func (s *Server) Start() (err error) {
 	// TODO: read from cfg
 	corsWrapper := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
@@ -68,34 +71,31 @@ func (s *Server) Start(ctx context.Context) (err error) {
 	// if UseLetsEncrypt...
 
 	go func() {
-		if err := s.Server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err = s.Server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("could not listen on %s: %v\n", listenAddr, err)
 		}
+		if err == http.ErrServerClosed {
+			err = nil
+		}
 	}()
-
 	log.Printf("server started")
 
-	<-ctx.Done()
-
-	ctxShutDown, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer func() {
-		cancel()
-	}()
-
-	if err = s.Server.Shutdown(ctxShutDown); err != nil {
-		log.Fatalf("server shutdown failed: %+s", err)
-	}
-
-	log.Printf("server stopped")
-
-	if err == http.ErrServerClosed {
-		err = nil
-	}
+	gracefullShutdown(s.Server)
 
 	return
 }
 
-// Stop stops the HTTP server
-func (s *Server) Stop() {
+func gracefullShutdown(srv *http.Server) {
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
+	<-interrupt
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatalf("server shutdown failed: %+s", err)
+	}
+	log.Fatalf("server is shutting down")
 }
