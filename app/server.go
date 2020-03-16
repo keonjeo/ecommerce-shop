@@ -74,9 +74,6 @@ func (s *Server) Start() (err error) {
 		if err = s.Server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("could not listen on %s: %v\n", listenAddr, err)
 		}
-		if err == http.ErrServerClosed {
-			err = nil
-		}
 	}()
 	log.Printf("server started")
 

@@ -24,7 +24,7 @@ func init() {
 func serverCmdFn(command *cobra.Command, args []string) error {
 	server, err := app.NewServer()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("could not create the app server: %v\n", err)
 	}
 
 	api.Init(server.Router)
