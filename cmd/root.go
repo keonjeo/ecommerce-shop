@@ -16,7 +16,7 @@ var rootCmd = &cobra.Command{
 // It is called in main.go
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		log.Fatal(err)
+		log.Fatalf("could not execute root command: %v\n", err)
 	}
 }
 

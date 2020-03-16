@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 
 	api "github.com/dankobgd/ecommerce-shop/api/v1"
@@ -29,21 +30,16 @@ func serverCmdFn(command *cobra.Command, args []string) error {
 
 	api.Init(server.Router)
 
+	// #################################################
+	db, _ := postgres.Connect()
+	var res string
+	_ = db.Get(&res, "select * from user;")
+	fmt.Printf("result user: %v\n", res)
+	// #################################################
+
 	if srvErr := server.Start(); srvErr != nil {
 		log.Fatalf("could not start the server: %v\n", srvErr)
 	}
-
-	// #################################################
-	log.Printf("STARTED CONNECTING")
-	db, err := postgres.Connect()
-	if err != nil {
-		log.Fatalln(err)
-		return err
-	}
-	res, _ := db.Query("select * from user;")
-	log.Printf("result: %v", res)
-	log.Printf("END CONNECTING")
-	// #################################################
 
 	return nil
 }
