@@ -2,18 +2,18 @@ version: "3.7"
 
 services:
   # Golang app
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: ./docker/app/Dockerfile
-  #   container_name: app
-  #   restart: always
-  #   ports:
-  #     - 3001:3001
-  #   networks:
-  #     - net
-  #   depends_on:
-  #     - database
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    container_name: app
+    restart: always
+    ports:
+      - 3001:3001
+    networks:
+      - net
+    depends_on:
+      - database
 
   # Database
   database:
