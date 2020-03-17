@@ -26,11 +26,12 @@ type Server struct {
 }
 
 // NewServer ...
-func NewServer() (*Server, error) {
+func NewServer(st store.Store) (*Server, error) {
 	r := chi.NewRouter()
 
 	s := &Server{
 		Router: r,
+		Store:  st,
 	}
 
 	// s.Log = log.NewLogger()

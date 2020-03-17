@@ -10,8 +10,8 @@ type PgProductStore struct {
 	PgStore
 }
 
-func newPgProductStore(pgst PgStore) store.ProductStore {
-	return &PgProductStore{pgst}
+func newPgProductStore(pgst *PgStore) store.ProductStore {
+	return &PgProductStore{*pgst}
 }
 
 // Save ...

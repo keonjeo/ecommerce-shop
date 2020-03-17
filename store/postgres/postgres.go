@@ -10,8 +10,13 @@ import (
 
 // PgStore ...
 type PgStore struct {
-	db *sqlx.DB
-	store.Store
+	db     *sqlx.DB
+	stores providedStores
+}
+
+type providedStores struct {
+	user    store.UserStore
+	product store.ProductStore
 }
 
 // Connect establishes connection to postgres db
@@ -25,7 +30,20 @@ func Connect() (*sqlx.DB, error) {
 	return db, nil
 }
 
-// New initializes postgres based store
-func (s PgStore) New(db *sqlx.DB) *PgStore {
-	return &PgStore{db: db}
+// NewStore initializes postgres based store
+func NewStore(db *sqlx.DB) *PgStore {
+	pgst := &PgStore{db: db}
+
+	pgst.stores.user = newPgUserStore(pgst)
+	pgst.stores.product = newPgProductStore(pgst)
+
+	return pgst
+}
+
+func (s *PgStore) User() store.UserStore {
+	return s.stores.user
+}
+
+func (s *PgStore) Product() store.ProductStore {
+	return s.stores.product
 }
