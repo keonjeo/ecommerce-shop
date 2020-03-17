@@ -16,7 +16,6 @@ func newPgUserStore(pgst *PgStore) store.UserStore {
 
 // Test ...
 func (s PgUserStore) Test() string {
-	// return "ROFL MAO"
 	var str string
 	_ = s.db.Get(&str, "select * from user;")
 	return str
