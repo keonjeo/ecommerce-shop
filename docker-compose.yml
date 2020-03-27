@@ -5,7 +5,7 @@ services:
   # app:
   #   build:
   #     context: .
-  #     dockerfile: ./docker/app/Dockerfile
+  #     dockerfile: ./dockerfiles/app.dockerfile
   #   container_name: app
   #   restart: always
   #   ports:
@@ -17,9 +17,7 @@ services:
 
   # Database
   database:
-    build:
-      context: .
-      dockerfile: ./docker/database/Dockerfile
+    image: postgres:alpine
     container_name: database
     restart: always
     ports:
@@ -35,9 +33,7 @@ services:
 
   # Database client
   adminer:
-    build:
-      context: .
-      dockerfile: ./docker/adminer/Dockerfile
+    image: adminer
     container_name: adminer
     restart: always
     ports:
