@@ -2,7 +2,6 @@ package apiv1
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/go-chi/chi"
 )
@@ -32,5 +31,9 @@ func (a *API) getUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *API) test(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("user from db: " + a.app.Test() + ", cfg port: " + strconv.Itoa(a.app.Cfg().Port)))
+	respondJSON(w, http.StatusOK, map[string]interface{}{
+		"isDev": a.app.IsDev(),
+		"db":    a.app.Test(),
+		"cfg":   a.app.Cfg(),
+	})
 }
