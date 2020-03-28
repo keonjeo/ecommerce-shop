@@ -61,16 +61,6 @@ type Config struct {
 	Cookie CookieConfig
 }
 
-func (c Config) isDev() bool {
-	return c.ENV == "development"
-}
-func (c Config) isProd() bool {
-	return c.ENV == "production"
-}
-func (c Config) isTest() bool {
-	return c.ENV == "test"
-}
-
 func loadEnvironment() {
 	err := godotenv.Load()
 	if err != nil {

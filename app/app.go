@@ -27,6 +27,21 @@ func New(options ...Option) *App {
 	return app
 }
 
+// IsDev returs true if app is in development mode
+func (a *App) IsDev() bool {
+	return a.Cfg().ENV == "development"
+}
+
+// IsProd returs true if app is in production mode
+func (a *App) IsProd() bool {
+	return a.Cfg().ENV == "production"
+}
+
+// IsTest returs true if app is in test mode
+func (a *App) IsTest() bool {
+	return a.Cfg().ENV == "test"
+}
+
 // Srv ...
 func (a *App) Srv() *Server {
 	return a.srv
