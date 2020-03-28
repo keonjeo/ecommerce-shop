@@ -5,6 +5,7 @@ import (
 
 	api "github.com/dankobgd/ecommerce-shop/api/v1"
 	"github.com/dankobgd/ecommerce-shop/app"
+	"github.com/dankobgd/ecommerce-shop/config"
 	"github.com/dankobgd/ecommerce-shop/store/postgres"
 	"github.com/spf13/cobra"
 )
@@ -22,7 +23,6 @@ func init() {
 }
 
 func serverCmdFn(command *cobra.Command, args []string) error {
-
 	db, err := postgres.Connect()
 	if err != nil {
 		return err
@@ -35,8 +35,11 @@ func serverCmdFn(command *cobra.Command, args []string) error {
 		log.Fatalf("could not create the app server: %v\n", err)
 	}
 
+	cfg := config.New()
+
 	a := app.New()
 	a.SetServer(server)
+	a.SetConfig(cfg)
 
 	api.Init(a, server.Router)
 

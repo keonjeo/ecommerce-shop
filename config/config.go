@@ -1,9 +1,7 @@
 package config
 
 import (
-	"fmt"
 	"log"
-	"time"
 
 	"github.com/caarlos0/env/v6"
 	"github.com/joho/godotenv"
@@ -46,17 +44,17 @@ type EmailConfig struct {
 
 // CookieConfig ...
 type CookieConfig struct {
-	Name     string    `env:"COOKIE_NAME" envDefault:"cookie"`
-	Path     string    `env:"COOKIE_PATH" envDefault:"/"`
-	Secret   string    `env:"COOKIE_SECRET" envDefault:"xxxxx"`
-	HTTPOnly bool      `env:"COOKIE_HTTP_ONLY" envDefault:"false"`
-	Secure   bool      `env:"COOKIE_SECURE" envDefault:"false"`
-	MaxAge   time.Time `env:"COOKIE_MAX_AGE" envDefault:"0"`
+	Name     string `env:"COOKIE_NAME" envDefault:"cookie"`
+	Path     string `env:"COOKIE_PATH" envDefault:"/"`
+	Secret   string `env:"COOKIE_SECRET" envDefault:"xxxxx"`
+	HTTPOnly bool   `env:"COOKIE_HTTP_ONLY" envDefault:"false"`
+	Secure   bool   `env:"COOKIE_SECURE" envDefault:"false"`
+	MaxAge   int    `env:"COOKIE_MAX_AGE" envDefault:"0"`
 }
 
 // Config represents the app config
 type Config struct {
-	App    AppConfig
+	AppConfig
 	DB     DatabaseConfig
 	Auth   AuthConfig
 	Email  EmailConfig
@@ -64,27 +62,30 @@ type Config struct {
 }
 
 func (c Config) isDev() bool {
-	return c.App.ENV == "development"
+	return c.ENV == "development"
 }
 func (c Config) isProd() bool {
-	return c.App.ENV == "production"
+	return c.ENV == "production"
 }
 func (c Config) isTest() bool {
-	return c.App.ENV == "test"
+	return c.ENV == "test"
 }
 
 func loadEnvironment() {
-	err := godotenv.Load("../.env")
+	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("error loading .env file")
+		log.Fatalf("error loading .env file: %v", err)
 	}
 }
 
-func init() {
+// New creates the new config
+func New() *Config {
 	loadEnvironment()
-	cfg := Config{}
-	if err := env.Parse(&cfg); err != nil {
-		panic("config error")
+
+	cfg := &Config{}
+	if err := env.Parse(cfg); err != nil {
+		panic(err)
 	}
-	fmt.Printf("%+v\n", cfg)
+
+	return cfg
 }

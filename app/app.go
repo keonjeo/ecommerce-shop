@@ -1,8 +1,11 @@
 package app
 
+import "github.com/dankobgd/ecommerce-shop/config"
+
 // App represents the app struct
 type App struct {
 	srv *Server
+	cfg *config.Config
 	// log *log.Logger
 	// t goi18n.TranslateFunc
 }
@@ -32,6 +35,16 @@ func (a *App) Srv() *Server {
 // SetServer ...
 func (a *App) SetServer(srv *Server) {
 	a.srv = srv
+}
+
+// Cfg ...
+func (a *App) Cfg() *config.Config {
+	return a.cfg
+}
+
+// SetConfig ...
+func (a *App) SetConfig(cfg *config.Config) {
+	a.cfg = cfg
 }
 
 // func (a *App) Log() *log.Logger {
