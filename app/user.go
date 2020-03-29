@@ -10,8 +10,3 @@ func (a *App) CreateUser(user *model.User) (*model.User, error) {
 	// user, err := a.Srv().Store.User().GetByEmail(email)
 	return nil, nil
 }
-
-// Test ...
-func (a *App) Test() string {
-	return a.Srv().Store.User().Test()
-}

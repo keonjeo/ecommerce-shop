@@ -3,6 +3,7 @@ package apiv1
 import (
 	"net/http"
 
+	"github.com/dankobgd/ecommerce-shop/model"
 	"github.com/go-chi/chi"
 )
 
@@ -10,30 +11,22 @@ func users(a *API) http.Handler {
 	r := chi.NewRouter()
 
 	r.Get("/", a.getUsers)
-	r.Get("/{user_id:[A-Za-z0-9]+}", a.getUser)
 	r.Post("/", a.postUsers)
-	r.Get("/test", a.test)
+	r.Get("/{user_id:[A-Za-z0-9]+}", a.getUser)
 
 	return r
 }
 
 func (a *API) getUsers(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("all users"))
+	respondJSON(w, http.StatusOK, a.app.Cfg())
 }
 
 func (a *API) postUsers(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("post users"))
+	user := model.UserFromJSON(r.Body)
+
+	respondJSON(w, http.StatusCreated, user)
 }
 
 func (a *API) getUser(w http.ResponseWriter, r *http.Request) {
-	userID := chi.URLParam(r, "user_id")
-	w.Write([]byte("user: " + userID))
-}
-
-func (a *API) test(w http.ResponseWriter, r *http.Request) {
-	respondJSON(w, http.StatusOK, map[string]interface{}{
-		"isDev": a.app.IsDev(),
-		"db":    a.app.Test(),
-		"cfg":   a.app.Cfg(),
-	})
+	respondJSON(w, http.StatusOK, chi.URLParam(r, "user_id"))
 }

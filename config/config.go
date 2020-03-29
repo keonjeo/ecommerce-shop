@@ -3,62 +3,73 @@ package config
 import (
 	"log"
 
-	"github.com/caarlos0/env/v6"
 	"github.com/joho/godotenv"
+	"github.com/kelseyhightower/envconfig"
 )
 
-// AppConfig ...
-type AppConfig struct {
-	Host string `env:"HOST" envDefault:"127.0.0.1"`
-	Port int    `env:"PORT" envDefault:"3001"`
-	ENV  string `env:"ENV" envDefault:"development"`
+// AppSettings ...
+type AppSettings struct {
+	Host string `envconfig:"HOST"`
+	Port int    `envconfig:"PORT"`
+	ENV  string `envconfig:"ENV"`
 }
 
-// DatabaseConfig ...
-type DatabaseConfig struct {
-	PostgresHost string `env:"POSTGRES_HOST"`
-	PostgresURI  string `env:"POSTGRES_URI"`
-	PostgresDB   string `env:"POSTGRES_DB"`
-	PostgresUser string `env:"POSTGRES_USER"`
-	PostgresPass string `env:"POSTGRES_PASSWORD"`
+// DatabaseSettings ...
+type DatabaseSettings struct {
+	PostgresHost string `envconfig:"POSTGRES_HOST"`
+	PostgresURI  string `envconfig:"POSTGRES_URI"`
+	PostgresDB   string `envconfig:"POSTGRES_DB"`
+	PostgresUser string `envconfig:"POSTGRES_USER"`
+	PostgresPass string `envconfig:"POSTGRES_PASSWORD"`
 }
 
-// AuthConfig ...
-type AuthConfig struct {
-	VerificationRequired  bool   `env:"VERIFICATION_REQUIRED" envDefault:"false"`
-	ResetPasswordValidFor int    `env:"RESET_PASSWORD_VALID_FOR" envDefault:"9999"`
-	AccessTokenSecret     string `env:"ACCESS_TOKEN_SECRET" envDefault:"xxxxx"`
-	RefreshTokenSecret    string `env:"REFRESH_TOKEN_SECRET" envDefault:"xxxxx"`
+// AuthSettings ...
+type AuthSettings struct {
+	VerificationRequired  bool   `envconfig:"VERIFICATION_REQUIRED"`
+	ResetPasswordValidFor int    `envconfig:"RESET_PASSWORD_VALID_FOR"`
+	AccessTokenSecret     string `envconfig:"ACCESS_TOKEN_SECRET"`
+	RefreshTokenSecret    string `envconfig:"REFRESH_TOKEN_SECRET"`
 }
 
-// EmailConfig ...
-type EmailConfig struct {
-	Enabled   bool   `env:"EMAIL_ENABLED" envDefault:"false"`
-	Transport string `env:"EMAIL_TRANSPORT" envDefault:"sendgrid"`
-	From      string `env:"EMAIL_FROM" envDefault:"dp24031995@gmail.com"`
-	Host      string `env:"EMAIL_HOST"`
-	Port      int    `env:"EMAIL_PORT"`
-	User      string `env:"EMAIL_USER"`
-	Pass      string `env:"EMAIL_PASS"`
+// EmailSettings ...
+type EmailSettings struct {
+	Enabled   bool   `envconfig:"EMAIL_ENABLED"`
+	Transport string `envconfig:"EMAIL_TRANSPORT"`
+	From      string `envconfig:"EMAIL_FROM"`
+	Host      string `envconfig:"EMAIL_HOST"`
+	Port      int    `envconfig:"EMAIL_PORT"`
+	User      string `envconfig:"EMAIL_USER"`
+	Pass      string `envconfig:"EMAIL_PASS"`
 }
 
-// CookieConfig ...
-type CookieConfig struct {
-	Name     string `env:"COOKIE_NAME" envDefault:"cookie"`
-	Path     string `env:"COOKIE_PATH" envDefault:"/"`
-	Secret   string `env:"COOKIE_SECRET" envDefault:"xxxxx"`
-	HTTPOnly bool   `env:"COOKIE_HTTP_ONLY" envDefault:"false"`
-	Secure   bool   `env:"COOKIE_SECURE" envDefault:"false"`
-	MaxAge   int    `env:"COOKIE_MAX_AGE" envDefault:"0"`
+// CookieSettings ...
+type CookieSettings struct {
+	Name     string `envconfig:"COOKIE_NAME"`
+	Path     string `envconfig:"COOKIE_PATH"`
+	Secret   string `envconfig:"COOKIE_SECRET"`
+	HTTPOnly bool   `envconfig:"COOKIE_HTTP_ONLY"`
+	Secure   bool   `envconfig:"COOKIE_SECURE"`
+	MaxAge   int    `envconfig:"COOKIE_MAX_AGE"`
+}
+
+// PasswordSettings ...
+type PasswordSettings struct {
+	MinLength int
+	MaxLength int
+	Lowercase bool
+	Uppercase bool
+	Number    bool
+	Symbol    bool
 }
 
 // Config represents the app config
 type Config struct {
-	AppConfig
-	DB     DatabaseConfig
-	Auth   AuthConfig
-	Email  EmailConfig
-	Cookie CookieConfig
+	AppSettings
+	DatabaseSettings DatabaseSettings
+	AuthSettings     AuthSettings
+	EmailSettings    EmailSettings
+	CookieSettings   CookieSettings
+	PasswordSettings PasswordSettings
 }
 
 func loadEnvironment() {
@@ -68,14 +79,26 @@ func loadEnvironment() {
 	}
 }
 
+// ApplyDefaults sets all config default values
+func (c *Config) ApplyDefaults() {
+	c.AppSettings.SetDefaults()
+	c.DatabaseSettings.SetDefaults()
+	c.AuthSettings.SetDefaults()
+	c.EmailSettings.SetDefaults()
+	c.CookieSettings.SetDefaults()
+	c.PasswordSettings.SetDefaults()
+}
+
 // New creates the new config
 func New() *Config {
 	loadEnvironment()
 
 	cfg := &Config{}
-	if err := env.Parse(cfg); err != nil {
+	if err := envconfig.Process("", cfg); err != nil {
 		panic(err)
 	}
+
+	cfg.ApplyDefaults()
 
 	return cfg
 }

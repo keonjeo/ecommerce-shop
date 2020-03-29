@@ -18,8 +18,6 @@ type UserStore interface {
 	GetByEmail(email string) (*model.User, error)
 	Update(id int, u *model.User) (*model.User, error)
 	Delete(id int) (*model.User, error)
-
-	Test() string
 }
 
 // ProductStore represents the storage for the product model

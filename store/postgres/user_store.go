@@ -14,13 +14,6 @@ func newPgUserStore(pgst *PgStore) store.UserStore {
 	return &PgUserStore{*pgst}
 }
 
-// Test ...
-func (s PgUserStore) Test() string {
-	var str string
-	_ = s.db.Get(&str, "select * from user;")
-	return str
-}
-
 // Save ...
 func (s PgUserStore) Save(*model.User) (*model.User, error) {
 	return &model.User{}, nil

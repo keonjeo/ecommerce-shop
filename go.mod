@@ -2,15 +2,14 @@ module github.com/dankobgd/ecommerce-shop
 
 go 1.14
 
-require (
-	github.com/caarlos0/env v3.5.0+incompatible // indirect
-	github.com/caarlos0/env/v6 v6.2.1
+require (	
 	github.com/go-chi/chi v4.0.3+incompatible
 	github.com/go-ozzo/ozzo-validation/v4 v4.1.0 // indirect
 	github.com/golang-migrate/migrate v3.5.4+incompatible // indirect
 	github.com/jackc/pgx v3.6.2+incompatible
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/joho/godotenv v1.3.0
+	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/nicksnyder/go-i18n v2.0.3+incompatible // indirect
 	github.com/pelletier/go-toml v1.6.0 // indirect
 	github.com/rs/cors v1.7.0
@@ -22,6 +21,7 @@ require (
 	github.com/spf13/viper v1.6.2 // indirect
 	go.uber.org/multierr v1.5.0 // indirect
 	go.uber.org/zap v1.14.0 // indirect
+	golang.org/x/crypto v0.0.0-20200323165209-0ec3e9974c59
 	golang.org/x/lint v0.0.0-20200130185559-910be7a94367 // indirect
 	golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae // indirect
 	golang.org/x/text v0.3.2 // indirect
