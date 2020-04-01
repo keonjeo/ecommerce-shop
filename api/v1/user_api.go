@@ -1,6 +1,7 @@
 package apiv1
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/dankobgd/ecommerce-shop/model"
@@ -18,11 +19,23 @@ func users(a *API) http.Handler {
 }
 
 func (a *API) getUsers(w http.ResponseWriter, r *http.Request) {
-	respondJSON(w, http.StatusOK, a.app.Cfg())
+	respondError(w, model.NewAppError("GetUsers", "api.user_api.get_users", "ErrGetUsers", "could not get users", map[string]interface{}{"a": "b"}, http.StatusInternalServerError))
+	return
 }
 
 func (a *API) postUsers(w http.ResponseWriter, r *http.Request) {
-	user := model.UserFromJSON(r.Body)
+	user, err := model.UserFromJSON(r.Body)
+	if err != nil {
+		respondError(w, model.NewAppError("postUsers", "api.user_api.post_users", "ErrPostUsers", err.Error(), nil, http.StatusInternalServerError))
+		return
+	}
+
+	if err := user.Validate(); err != nil {
+		log.Printf("%v\n", err)
+
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	respondJSON(w, http.StatusCreated, user)
 }

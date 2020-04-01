@@ -37,9 +37,12 @@ func serverCmdFn(command *cobra.Command, args []string) error {
 
 	cfg := config.New()
 
-	a := app.New()
-	a.SetServer(server)
-	a.SetConfig(cfg)
+	appOpts := []app.Option{
+		app.SetConfig(cfg),
+		app.SetServer(server),
+	}
+
+	a := app.New(appOpts...)
 
 	api.Init(a, server.Router)
 

@@ -1,20 +1,23 @@
 package app
 
-import "github.com/dankobgd/ecommerce-shop/config"
+import (
+	"github.com/dankobgd/ecommerce-shop/config"
+	"github.com/dankobgd/ecommerce-shop/zlog"
+)
 
 // App represents the app struct
 type App struct {
 	srv *Server
 	cfg *config.Config
-	// log *log.Logger
+	log *zlog.Logger
 	// t goi18n.TranslateFunc
 }
 
-// Option represents App option
-type Option func(*App)
+// Option for the app
+type Option func(*App) error
 
-// OptionCreator represents list of app options
-type OptionCreator []Option
+// OptionCreator for the app
+type OptionCreator func() []Option
 
 // New creates the new App
 func New(options ...Option) *App {
@@ -62,9 +65,15 @@ func (a *App) SetConfig(cfg *config.Config) {
 	a.cfg = cfg
 }
 
-// func (a *App) Log() *log.Logger {
-// 	return a.log
-// }
+// Log ...
+func (a *App) Log() *zlog.Logger {
+	return a.log
+}
+
+// SetLogger ...
+func (a *App) SetLogger(logger *zlog.Logger) {
+	a.log = logger
+}
 
 // func (a *App) T(translationID string, args ...interface{}) string {
 // 	return a.t(translationID, args...)
