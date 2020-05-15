@@ -19,6 +19,7 @@ func users(a *API) http.Handler {
 }
 
 func (a *API) getUsers(w http.ResponseWriter, r *http.Request) {
+	a.app.GetUsers()
 	respondError(w, model.NewAppError("GetUsers", "api.user_api.get_users", "ErrGetUsers", "could not get users", map[string]interface{}{"a": "b"}, http.StatusInternalServerError))
 	return
 }

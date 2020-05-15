@@ -62,6 +62,17 @@ type PasswordSettings struct {
 	Symbol    bool
 }
 
+// LoggerSettings ...
+type LoggerSettings struct {
+	EnableConsole bool
+	ConsoleJSON   bool
+	ConsoleLevel  string
+	EnableFile    bool
+	FileJSON      bool
+	FileLevel     string
+	FileLocation  string
+}
+
 // Config represents the app config
 type Config struct {
 	AppSettings
@@ -70,6 +81,7 @@ type Config struct {
 	EmailSettings    EmailSettings
 	CookieSettings   CookieSettings
 	PasswordSettings PasswordSettings
+	LoggerSettings   LoggerSettings
 }
 
 func loadEnvironment() {
@@ -87,6 +99,8 @@ func (c *Config) ApplyDefaults() {
 	c.EmailSettings.SetDefaults()
 	c.CookieSettings.SetDefaults()
 	c.PasswordSettings.SetDefaults()
+	c.LoggerSettings.SetDefaults()
+
 }
 
 // New creates the new config

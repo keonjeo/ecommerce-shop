@@ -49,15 +49,15 @@ var (
 	Duration = zap.Duration
 )
 
-// Config for the logger
-type Config struct {
-	ConsoleEnabled bool
-	ConsoleJSON    bool
-	ConsoleLevel   string
-	FileEnabled    bool
-	FileJSON       bool
-	FileLevel      string
-	FileLocation   string
+// LoggerConfig for the logger
+type LoggerConfig struct {
+	EnableConsole bool
+	ConsoleJSON   bool
+	ConsoleLevel  string
+	EnableFile    bool
+	FileJSON      bool
+	FileLevel     string
+	FileLocation  string
 }
 
 // Logger wraps zap Logger
@@ -93,8 +93,8 @@ func getEncoder(json bool) zapcore.Encoder {
 	return zapcore.NewConsoleEncoder(encoderConfig)
 }
 
-// New creates the new Logger
-func New(config *Config) *Logger {
+// NewLogger creates the new Logger
+func NewLogger(config *LoggerConfig) *Logger {
 	cores := []zapcore.Core{}
 
 	logger := &Logger{
@@ -102,13 +102,13 @@ func New(config *Config) *Logger {
 		fileLevel:    zap.NewAtomicLevelAt(getZapLevel(config.FileLevel)),
 	}
 
-	if config.ConsoleEnabled {
+	if config.EnableConsole {
 		writer := zapcore.Lock(os.Stderr)
 		core := zapcore.NewCore(getEncoder(config.ConsoleJSON), writer, logger.consoleLevel)
 		cores = append(cores, core)
 	}
 
-	if config.FileEnabled {
+	if config.EnableFile {
 		writer := zapcore.AddSync(&lumberjack.Logger{
 			Filename: config.FileLocation,
 			MaxSize:  100,
@@ -138,7 +138,7 @@ func (l *Logger) Sugar() *SugarLogger {
 }
 
 // ChangeLevels changes console and file log levels
-func (l *Logger) ChangeLevels(config *Config) {
+func (l *Logger) ChangeLevels(config *LoggerConfig) {
 	l.consoleLevel.SetLevel(getZapLevel(config.ConsoleLevel))
 	l.fileLevel.SetLevel(getZapLevel(config.FileLevel))
 }

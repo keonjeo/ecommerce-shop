@@ -7,6 +7,7 @@ import (
 	"github.com/dankobgd/ecommerce-shop/app"
 	"github.com/dankobgd/ecommerce-shop/config"
 	"github.com/dankobgd/ecommerce-shop/store/postgres"
+	"github.com/dankobgd/ecommerce-shop/zlog"
 	"github.com/spf13/cobra"
 )
 
@@ -37,9 +38,22 @@ func serverCmdFn(command *cobra.Command, args []string) error {
 
 	cfg := config.New()
 
+	logger := zlog.NewLogger(&zlog.LoggerConfig{
+		EnableConsole: true,
+		ConsoleLevel:  "debug",
+		ConsoleJSON:   true,
+		EnableFile:    true,
+		FileLevel:     "info",
+		FileJSON:      true,
+		FileLocation:  "./logs/app.log",
+	})
+
+	zlog.InitGlobalLogger(logger)
+
 	appOpts := []app.Option{
 		app.SetConfig(cfg),
 		app.SetServer(server),
+		app.SetLogger(logger),
 	}
 
 	a := app.New(appOpts...)

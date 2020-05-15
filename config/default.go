@@ -116,3 +116,28 @@ func (s *PasswordSettings) SetDefaults() {
 		s.Symbol = false
 	}
 }
+
+// SetDefaults sets default values for LoggerSettings
+func (s *LoggerSettings) SetDefaults() {
+	if s.EnableConsole == false {
+		s.EnableConsole = true
+	}
+	if s.ConsoleJSON == false {
+		s.EnableConsole = false
+	}
+	if s.ConsoleLevel == "" {
+		s.ConsoleLevel = "debug"
+	}
+	if s.EnableFile == false {
+		s.EnableFile = false
+	}
+	if s.FileJSON == false {
+		s.FileJSON = true
+	}
+	if s.FileLevel == "" {
+		s.FileLevel = "info"
+	}
+	if s.FileLocation == "" {
+		s.FileLocation = ""
+	}
+}

@@ -1,4 +1,4 @@
-package cmd
+nteger generated always as identity primary key,package cmd
 
 import (
 	"errors"
