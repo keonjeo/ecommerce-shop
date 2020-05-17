@@ -2,7 +2,6 @@ package model
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -70,11 +69,11 @@ func (u *User) Validate() error {
 // Validate checks if user is valid
 func (u *User) _Validate() *AppError {
 	if len(u.Email) > USER_EMAIL_MAX_LENGTH || len(u.Email) == 0 {
-		return NewAppError("GetUsers", "api.user_api.get_users", "ErrGetUsers", "invalid username", map[string]interface{}{"some": "stuff"}, http.StatusInternalServerError)
+		return NewAppError("GetUsers", "api.user.get_users.invalid_email.app_error", nil, "", http.StatusInternalServerError)
 
 	}
 	if len(u.Password) > USER_PASSWORD_MAX_LENGTH || len(u.Password) == 0 {
-		return NewAppError("GetUsers", "api.user_api.get_users", "ErrGetUsers", "invalid password", map[string]interface{}{"some": "stuff"}, http.StatusInternalServerError)
+		return NewAppError("GetUsers", "api.user.get_users.invalid_password.app_error", nil, "", http.StatusInternalServerError)
 	}
 
 	return nil
@@ -133,15 +132,16 @@ func (u *User) PreSave() {}
 func (u *User) PreUpdate() {}
 
 // InvalidUserError creates user specific AppError
-func InvalidUserError(fieldName string, userID string) *AppError {
-	id := fmt.Sprintf("model.user.is_valid.%s.app_error", fieldName)
-	details := ""
-	if userID != "" {
-		details = "user_id=" + userID
-	}
-	return NewAppError("User.IsValid", id, "ErrInvalidUser", details, nil, http.StatusBadRequest)
-	// model.NewAppError("GetUsers", "api.user_api.get_users", "ErrGetUsers", "could not get users", map[string]interface{}{"some": "stuff"}, http.StatusInternalServerError))
-}
+// func InvalidUserError(fieldName string, userID string) *AppError {
+// 	id := fmt.Sprintf("model.user.is_valid.%s.app_error", fieldName)
+// 	details := ""
+// 	if userID != "" {
+// 		details = "user_id=" + userID
+// 	}
+// 	return NewAppError("User.IsValid", id, "ErrInvalidUser", details, nil, http.StatusBadRequest)
+
+// 	// model.NewAppError("GetUsers", "api.user.get_users", "ErrGetUsers", "could not get users", map[string]interface{}{"some": "stuff"}, http.StatusInternalServerError))
+// }
 
 // NormalizeUsername trims space and returns lowercase username
 func NormalizeUsername(username string) string {

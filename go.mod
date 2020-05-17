@@ -3,33 +3,29 @@ module github.com/dankobgd/ecommerce-shop
 go 1.14
 
 require (
-	github.com/asaskevich/govalidator v0.0.0-20200108200545-475eaeb16496 // indirect
+	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-chi/chi v4.0.3+incompatible
-	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
-	github.com/go-ozzo/ozzo-validation/v4 v4.1.0
-	github.com/golang-migrate/migrate v3.5.4+incompatible // indirect
+	github.com/go-ozzo/ozzo-validation/v4 v4.2.1
 	github.com/jackc/pgx v3.6.2+incompatible
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/joho/godotenv v1.3.0
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/nicksnyder/go-i18n v2.0.3+incompatible // indirect
-	github.com/pelletier/go-toml v1.6.0 // indirect
+	github.com/mitchellh/mapstructure v1.3.0 // indirect
+	github.com/nicksnyder/go-i18n/v2 v2.0.3 // indirect
+	github.com/pelletier/go-toml v1.7.0 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rs/cors v1.7.0
 	github.com/spf13/afero v1.2.2 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
-	github.com/spf13/cobra v0.0.6
+	github.com/spf13/cobra v1.0.0
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/spf13/viper v1.6.2 // indirect
-	go.uber.org/multierr v1.5.0 // indirect
-	go.uber.org/zap v1.14.0
-	golang.org/x/crypto v0.0.0-20200323165209-0ec3e9974c59
-	golang.org/x/lint v0.0.0-20200130185559-910be7a94367 // indirect
-	golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae // indirect
+	github.com/spf13/viper v1.7.0 // indirect
+	go.uber.org/zap v1.15.0
+	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37
+	golang.org/x/sys v0.0.0-20200515095857-1151b9dac4a9 // indirect
 	golang.org/x/text v0.3.2 // indirect
-	golang.org/x/tools v0.0.0-20200225230052-807dcd883420 // indirect
-	gopkg.in/ini.v1 v1.52.0 // indirect
+	gopkg.in/ini.v1 v1.56.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
-	gopkg.in/yaml.v2 v2.2.8 // indirect
-	honnef.co/go/tools v0.0.1-2020.1.3 // indirect
+	gopkg.in/yaml.v2 v2.3.0 // indirect
 )

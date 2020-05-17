@@ -10,7 +10,7 @@ type App struct {
 	srv *Server
 	cfg *config.Config
 	log *zlog.Logger
-	// t goi18n.TranslateFunc
+	// t   goi18n.TranslateFunc
 }
 
 // Option for the app
