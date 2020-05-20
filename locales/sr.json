@@ -1,6 +1,24 @@
 [
   {
-    "id": "home.title",
-    "translation": "Zdravo"
+    "id": "hello_world",
+    "translation": "Zdravo Svete"
+  },
+  {
+    "id": "emails",
+    "translation": {
+      "one": "{{.User}} ima jedan email",
+      "other": "{{.User}} ima {{.Count}} email poruka"
+    }
+  },
+  {
+    "id": "files",
+    "translation": {
+      "one": "{{.Count}} fajl",
+      "other": "{{.Count}} fajlova"
+    }
+  },
+  {
+    "id": "api.test.app_error",
+    "translation": "testiranje prevoda za appError"
   }
 ]

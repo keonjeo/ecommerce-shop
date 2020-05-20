@@ -7,14 +7,14 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
-// AppSettings ...
+// AppSettings contains common app settings
 type AppSettings struct {
 	Host string `envconfig:"HOST"`
 	Port int    `envconfig:"PORT"`
 	ENV  string `envconfig:"ENV"`
 }
 
-// DatabaseSettings ...
+// DatabaseSettings contains DB settings
 type DatabaseSettings struct {
 	PostgresHost string `envconfig:"POSTGRES_HOST"`
 	PostgresURI  string `envconfig:"POSTGRES_URI"`
@@ -23,7 +23,7 @@ type DatabaseSettings struct {
 	PostgresPass string `envconfig:"POSTGRES_PASSWORD"`
 }
 
-// AuthSettings ...
+// AuthSettings contains auth related settings
 type AuthSettings struct {
 	VerificationRequired  bool   `envconfig:"VERIFICATION_REQUIRED"`
 	ResetPasswordValidFor int    `envconfig:"RESET_PASSWORD_VALID_FOR"`
@@ -31,7 +31,7 @@ type AuthSettings struct {
 	RefreshTokenSecret    string `envconfig:"REFRESH_TOKEN_SECRET"`
 }
 
-// EmailSettings ...
+// EmailSettings contains email settings
 type EmailSettings struct {
 	Enabled   bool   `envconfig:"EMAIL_ENABLED"`
 	Transport string `envconfig:"EMAIL_TRANSPORT"`
@@ -42,7 +42,7 @@ type EmailSettings struct {
 	Pass      string `envconfig:"EMAIL_PASS"`
 }
 
-// CookieSettings ...
+// CookieSettings contains cookie security settings
 type CookieSettings struct {
 	Name     string `envconfig:"COOKIE_NAME"`
 	Path     string `envconfig:"COOKIE_PATH"`
@@ -52,7 +52,7 @@ type CookieSettings struct {
 	MaxAge   int    `envconfig:"COOKIE_MAX_AGE"`
 }
 
-// PasswordSettings ...
+// PasswordSettings contains the password criteria settings
 type PasswordSettings struct {
 	MinLength int
 	MaxLength int
@@ -62,7 +62,7 @@ type PasswordSettings struct {
 	Symbol    bool
 }
 
-// LoggerSettings ...
+// LoggerSettings contains the logger settings
 type LoggerSettings struct {
 	EnableConsole bool
 	ConsoleJSON   bool

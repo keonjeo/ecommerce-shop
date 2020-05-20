@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/spf13/cobra"
@@ -18,12 +17,4 @@ func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatalf("could not execute root command: %v\n", err)
 	}
-}
-
-func initConfig() {
-	fmt.Println("Config Initialized")
-}
-
-func init() {
-	cobra.OnInitialize(initConfig)
 }

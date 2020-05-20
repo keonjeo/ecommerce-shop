@@ -14,7 +14,7 @@ import (
 	"github.com/rs/cors"
 )
 
-// Server ...
+// Server containts the configured app server
 type Server struct {
 	Store  store.Store
 	Server *http.Server
@@ -25,7 +25,7 @@ type Server struct {
 	// other cfg
 }
 
-// NewServer ...
+// NewServer creates the new server
 func NewServer(st store.Store) (*Server, error) {
 	r := chi.NewRouter()
 

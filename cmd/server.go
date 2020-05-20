@@ -7,6 +7,7 @@ import (
 	"github.com/dankobgd/ecommerce-shop/app"
 	"github.com/dankobgd/ecommerce-shop/config"
 	"github.com/dankobgd/ecommerce-shop/store/postgres"
+	"github.com/dankobgd/ecommerce-shop/utils/locale"
 	"github.com/dankobgd/ecommerce-shop/zlog"
 	"github.com/spf13/cobra"
 )
@@ -49,6 +50,8 @@ func serverCmdFn(command *cobra.Command, args []string) error {
 	})
 
 	zlog.InitGlobalLogger(logger)
+
+	locale.InitTranslations()
 
 	appOpts := []app.Option{
 		app.SetConfig(cfg),

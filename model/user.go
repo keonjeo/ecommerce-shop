@@ -26,6 +26,16 @@ const (
 	USER_NAME_MIN_LENGTH      = 1
 )
 
+var reservedNames = []string{
+	"api",
+	"admin",
+	"signup",
+	"login",
+	"oauth",
+	"error",
+	"help",
+}
+
 // User represents the shop user model
 type User struct {
 	ID             int       `json:"id"`

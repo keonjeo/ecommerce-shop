@@ -6,7 +6,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 )
 
-// API ...
+// API is the v1 wrapper
 type API struct {
 	app *app.App
 }

@@ -1,6 +1,24 @@
 [
   {
-    "id": "home.title",
-    "translation": "Hello"
+    "id": "hello",
+    "translation": "Hello World from {{.Person}}"
+  },
+  {
+    "id": "emails",
+    "translation": {
+      "one": "{{.User}} has one  email",
+      "other": "{{.User}} has {{.PluralCount}} emails"
+    }
+  },
+  {
+    "id": "files",
+    "translation": {
+      "one": "one file downloaded",
+      "other": "{{.PluralCount}} files downloaded"
+    }
+  },
+  {
+    "id": "api.test.app_error",
+    "translation": "testing appError translation"
   }
 ]
