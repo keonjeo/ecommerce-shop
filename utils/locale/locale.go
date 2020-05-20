@@ -17,15 +17,16 @@ import (
 var T TranslateFunc
 
 // TP returns the translated msg identified by messageID
-// pluralCount can be (int, int8, int16, int32, int64) or a float formatted as a string (e.g. "123.45")
-// if no template is passed (TemplateData is nil), pluralCount will be used as a template
-// third argument is optional map[string]interface{}{} or struct{} used as a template
 var TP TranslatePluralFunc
 
 // TranslateFunc returns the translated msg identified by messageID
+// second argument is optional map[string]interface{}{} or struct{} used as a template
 type TranslateFunc func(messageID string, args ...interface{}) string
 
 // TranslatePluralFunc returns the translated msg identified by messageID
+// pluralCount can be (int, int8, int16, int32, int64) or a float formatted as a string (e.g. "123.45")
+// if no template is passed (TemplateData is nil), pluralCount will be used as a template
+// third argument is optional map[string]interface{}{} or struct{} used as a template
 type TranslatePluralFunc func(messageID string, pluralCount interface{}, args ...interface{}) string
 
 // locales holds the list of all the locales

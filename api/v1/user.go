@@ -53,9 +53,7 @@ func (a *API) test(w http.ResponseWriter, r *http.Request) {
 	if n > 5 {
 		respondError(w, model.NewAppError("test", "api.test.app_error", nil, "", http.StatusInternalServerError))
 		return
-	} else {
-		respondJSON(w, http.StatusOK, map[string]string{"msg": msg, "lang": lang})
-		return
 	}
-
+	respondJSON(w, http.StatusOK, map[string]string{"msg": msg, "lang": lang})
+	return
 }
