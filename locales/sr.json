@@ -18,7 +18,7 @@
     }
   },
   {
-    "id": "api.test.app_error",
-    "translation": "testiranje prevoda za appError"
+    "id": "api.user.create_user.app_error",
+    "translation": "greska prilikom kreiranja korisnika"
   }
 ]

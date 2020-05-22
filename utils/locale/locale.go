@@ -2,6 +2,7 @@ package locale
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -40,13 +41,13 @@ func LoadTranslations(b *i18n.Bundle) {
 	}
 }
 
-// GetLocalizerWithFallback gets the localizer by the specified language key
-func GetLocalizerWithFallback(lang string) *i18n.Localizer {
+// GetLocalizer gets the localizer by the specified language key
+func GetLocalizer(lang string) (*i18n.Localizer, error) {
 	val, ok := localizers[lang]
 	if !ok {
-		val = localizers[DEFAULT_LOCALE]
+		return nil, errors.New("could not get localizer from the map")
 	}
-	return val
+	return val, nil
 }
 
 // GetSupportedLocales shows the list of supported locales
@@ -61,11 +62,16 @@ func InitTranslations() {
 	localizers["en"] = i18n.NewLocalizer(bundle, "en")
 	localizers["sr"] = i18n.NewLocalizer(bundle, "sr")
 	T = TFuncWithLanguage("en")
+
 }
 
 // TFuncWithLanguage returns the TranslateFunc with specific language preference
-func TFuncWithLanguage(pref string) TranslateFunc {
-	localizer := GetLocalizerWithFallback(pref)
+func TFuncWithLanguage(locale string) TranslateFunc {
+	localizer, err := GetLocalizer(locale)
+	if err != nil {
+		return nil
+	}
+
 	return func(messageID string, pluralCount interface{}, template interface{}) string {
 		lc := &i18n.LocalizeConfig{
 			MessageID:    messageID,

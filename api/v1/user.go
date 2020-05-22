@@ -20,13 +20,13 @@ func users(a *API) http.Handler {
 func (a *API) createUser(w http.ResponseWriter, r *http.Request) {
 	user, err := model.UserFromJSON(r.Body)
 	if err != nil {
-		respondError(w, model.NewAppError("createUser", "api.user.create_user", nil, err.Error(), http.StatusInternalServerError))
+		respondError(w, model.NewAppError("createUser", "api.user.create_user.app_error", nil, err.Error(), http.StatusInternalServerError))
 		return
 	}
 
 	if err := user.Validate(); err != nil {
 		a.app.Log().Error(err.Error())
-		respondError(w, model.NewAppError("createUser", "api.user.create_user", nil, err.Error(), http.StatusInternalServerError))
+		respondError(w, model.NewAppError("createUser", "api.user.create_user.app_error", nil, err.Error(), http.StatusInternalServerError))
 		return
 	}
 	respondJSON(w, http.StatusCreated, user)

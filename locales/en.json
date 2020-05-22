@@ -18,7 +18,7 @@
     }
   },
   {
-    "id": "api.test.app_error",
-    "translation": "testing appError translation"
+    "id": "api.user.create_user.app_error",
+    "translation": "could not create user"
   }
 ]

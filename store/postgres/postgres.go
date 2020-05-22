@@ -8,7 +8,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-// PgStore ...
+// PgStore has the pg db driver
 type PgStore struct {
 	db     *sqlx.DB
 	stores providedStores
