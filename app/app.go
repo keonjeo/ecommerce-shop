@@ -85,6 +85,6 @@ func (a *App) SetT(t locale.TranslateFunc) {
 }
 
 // T is Translate function
-func (a *App) T(messageID string, args ...interface{}) string {
-	return a.t(messageID, args...)
+func (a *App) T(messageID string, pluralCount interface{}, template interface{}) string {
+	return a.t(messageID, pluralCount, template)
 }

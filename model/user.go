@@ -26,15 +26,7 @@ const (
 	USER_NAME_MIN_LENGTH      = 1
 )
 
-var reservedNames = []string{
-	"api",
-	"admin",
-	"signup",
-	"login",
-	"oauth",
-	"error",
-	"help",
-}
+var reservedNames = []string{"api", "admin", "signup", "login", "oauth", "error", "help"}
 
 // User represents the shop user model
 type User struct {
@@ -45,6 +37,7 @@ type User struct {
 	Email          string    `json:"email"`
 	Password       string    `json:"password"`
 	Gender         string    `json:"gender"`
+	Locale         string    `json:"locale"`
 	AvatarURL      string    `json:"avatar_url"`
 	Active         bool      `json:"active"`
 	EmailVerified  bool      `json:"email_verified"`

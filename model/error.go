@@ -46,9 +46,9 @@ func (e *AppError) Translate(T locale.TranslateFunc) {
 	}
 
 	if e.params == nil {
-		e.Message = T(e.ID)
+		e.Message = T(e.ID, nil, nil)
 	} else {
-		e.Message = T(e.ID, e.params)
+		e.Message = T(e.ID, nil, e.params)
 	}
 }
 

@@ -2,9 +2,9 @@ package locale
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"path/filepath"
 	"strings"
 
@@ -12,33 +12,19 @@ import (
 	"golang.org/x/text/language"
 )
 
-// T returns the translated msg identified by messageID
-// second argument is optional map[string]interface{}{} or interface{} used as a template
+const DEFAULT_LOCALE = "en"
+
+// T translates the msg identified by the id
 var T TranslateFunc
 
-// TP returns the translated msg identified by messageID
-var TP TranslatePluralFunc
-
 // TranslateFunc returns the translated msg identified by messageID
-// second argument is optional map[string]interface{}{} or struct{} used as a template
-type TranslateFunc func(messageID string, args ...interface{}) string
-
-// TranslatePluralFunc returns the translated msg identified by messageID
-// pluralCount can be (int, int8, int16, int32, int64) or a float formatted as a string (e.g. "123.45")
-// if no template is passed (TemplateData is nil), pluralCount will be used as a template
-// third argument is optional map[string]interface{}{} or struct{} used as a template
-type TranslatePluralFunc func(messageID string, pluralCount interface{}, args ...interface{}) string
+type TranslateFunc func(messageID string, pluralCount interface{}, template interface{}) string
 
 // locales holds the list of all the locales
 var locales map[string]string = make(map[string]string)
 
 // localizers holds the list of all i18n localizers that can be fetched at each request
 var localizers map[string]*i18n.Localizer = make(map[string]*i18n.Localizer)
-
-// CreateBundle creates the default i18n bundle
-func CreateBundle() *i18n.Bundle {
-	return i18n.NewBundle(language.English)
-}
 
 // LoadTranslations loads the translation files from the locales directory
 func LoadTranslations(b *i18n.Bundle) {
@@ -54,22 +40,13 @@ func LoadTranslations(b *i18n.Bundle) {
 	}
 }
 
-// InitLocales initializes the localizers and stores them in map
-func InitLocales(b *i18n.Bundle) {
-	en := i18n.NewLocalizer(b, "en")
-	sr := i18n.NewLocalizer(b, "sr")
-
-	localizers["en"] = en
-	localizers["sr"] = sr
-}
-
-// GetLocalizer gets the localizer by the specified language key
-func GetLocalizer(lang string) (*i18n.Localizer, error) {
+// GetLocalizerWithFallback gets the localizer by the specified language key
+func GetLocalizerWithFallback(lang string) *i18n.Localizer {
 	val, ok := localizers[lang]
 	if !ok {
-		return nil, errors.New("language with the given key is not supported")
+		val = localizers[DEFAULT_LOCALE]
 	}
-	return val, nil
+	return val
 }
 
 // GetSupportedLocales shows the list of supported locales
@@ -79,41 +56,45 @@ func GetSupportedLocales() map[string]string {
 
 // InitTranslations configures i18n
 func InitTranslations() {
-	bundle := CreateBundle()
+	bundle := i18n.NewBundle(language.English)
 	LoadTranslations(bundle)
-	InitLocales(bundle)
-
+	localizers["en"] = i18n.NewLocalizer(bundle, "en")
+	localizers["sr"] = i18n.NewLocalizer(bundle, "sr")
 	T = TFuncWithLanguage("en")
-	TP = TPFuncWithLanguage("en")
 }
 
 // TFuncWithLanguage returns the TranslateFunc with specific language preference
 func TFuncWithLanguage(pref string) TranslateFunc {
-	localizer, _ := GetLocalizer(pref)
-	return func(messageID string, args ...interface{}) string {
+	localizer := GetLocalizerWithFallback(pref)
+	return func(messageID string, pluralCount interface{}, template interface{}) string {
 		lc := &i18n.LocalizeConfig{
-			MessageID: messageID,
-		}
-		if len(args) == 1 {
-			lc.TemplateData = args[0]
+			MessageID:    messageID,
+			PluralCount:  pluralCount,
+			TemplateData: template,
 		}
 		return localizer.MustLocalize(lc)
 	}
 }
 
-// TPFuncWithLanguage returns the TranslatePluralFunc with specific language preference
-func TPFuncWithLanguage(pref string) TranslatePluralFunc {
-	localizer, _ := GetLocalizer(pref)
-	return func(messageID string, pluralCount interface{}, args ...interface{}) string {
-		lc := &i18n.LocalizeConfig{
-			MessageID:   messageID,
-			PluralCount: pluralCount,
-		}
-		if len(args) == 1 {
-			data := args[0].(map[string]interface{})
-			data["PluralCount"] = fmt.Sprintf("%v", pluralCount)
-			lc.TemplateData = data
-		}
-		return localizer.MustLocalize(lc)
+// GetUserTranslations gets T func by the given locale
+func GetUserTranslations(locale string) TranslateFunc {
+	if _, ok := locales[locale]; !ok {
+		locale = DEFAULT_LOCALE
 	}
+	return TFuncWithLanguage(locale)
+}
+
+// GetTranslationsAndLocale gets T fun together with locale from req headers
+func GetTranslationsAndLocale(w http.ResponseWriter, r *http.Request) (TranslateFunc, string) {
+	headerLocaleFull := strings.Split(r.Header.Get("Accept-Language"), ",")[0]
+	headerLocale := strings.Split(strings.Split(r.Header.Get("Accept-Language"), ",")[0], "-")[0]
+	defaultLocale := DEFAULT_LOCALE
+	if locales[headerLocaleFull] != "" {
+		return TFuncWithLanguage(headerLocaleFull), headerLocaleFull
+	} else if locales[headerLocale] != "" {
+		return TFuncWithLanguage(headerLocale), headerLocale
+	} else if locales[defaultLocale] != "" {
+		return TFuncWithLanguage(defaultLocale), headerLocale
+	}
+	return TFuncWithLanguage(defaultLocale), defaultLocale
 }

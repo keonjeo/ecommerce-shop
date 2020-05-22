@@ -1,20 +1,20 @@
 [
   {
-    "id": "hello_world",
-    "translation": "Zdravo Svete"
+    "id": "hello",
+    "translation": "Zdravo Svete "
   },
   {
     "id": "emails",
     "translation": {
       "one": "{{.User}} ima jedan email",
-      "other": "{{.User}} ima {{.Count}} email poruka"
+      "other": "{{.User}} ima {{.PluralCount}} email poruka"
     }
   },
   {
     "id": "files",
     "translation": {
-      "one": "{{.Count}} fajl",
-      "other": "{{.Count}} fajlova"
+      "one": "{{.PluralCount}} fajl",
+      "other": "{{.PluralCount}} fajlova"
     }
   },
   {

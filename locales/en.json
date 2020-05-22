@@ -1,7 +1,7 @@
 [
   {
     "id": "hello",
-    "translation": "Hello World from {{.Person}}"
+    "translation": "Hello World"
   },
   {
     "id": "emails",

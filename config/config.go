@@ -100,7 +100,6 @@ func (c *Config) ApplyDefaults() {
 	c.CookieSettings.SetDefaults()
 	c.PasswordSettings.SetDefaults()
 	c.LoggerSettings.SetDefaults()
-
 }
 
 // New creates the new config
