@@ -20,5 +20,21 @@
   {
     "id": "api.user.create_user.app_error",
     "translation": "greska prilikom kreiranja korisnika"
+  },
+  {
+    "id": "model.user.validate.email.app_error",
+    "translation": "neispravan email"
+  },
+  {
+    "id": "model.user.validate.password_limit.app_error",
+    "translation": "limit lozinke je prekoracen"
+  },
+  {
+    "id": "model.user.validate.created_at.app_error",
+    "translation": "created_at datum je neispravan"
+  },
+  {
+    "id": "model.user.validate.updated_at.app_error",
+    "translation": "updated_at datum je neispravan"
   }
 ]

@@ -24,12 +24,18 @@ func (a *API) createUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := user.Validate(); err != nil {
-		a.app.Log().Error(err.Error())
-		respondError(w, model.NewAppError("createUser", "api.user.create_user.app_error", nil, err.Error(), http.StatusInternalServerError))
+	createdUser, err2 := a.app.CreateUser(user)
+	if err != nil {
+		respondError(w, err2)
 		return
 	}
-	respondJSON(w, http.StatusCreated, user)
+
+	if err := user.Validate(); err != nil {
+		a.app.Log().Error(err.Error())
+		respondError(w, err)
+		return
+	}
+	respondJSON(w, http.StatusCreated, createdUser)
 }
 
 func (a *API) login(w http.ResponseWriter, r *http.Request) {

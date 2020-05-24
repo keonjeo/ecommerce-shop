@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/dankobgd/ecommerce-shop/store"
+	"github.com/jackc/pgx"
 	_ "github.com/jackc/pgx/stdlib" // pg driver
 	"github.com/jmoiron/sqlx"
 )
@@ -38,6 +39,14 @@ func NewStore(db *sqlx.DB) *PgStore {
 	pgst.stores.product = newPgProductStore(pgst)
 
 	return pgst
+}
+
+// IsUniqueConstraintError checks for postgres unique constraint error code
+func IsUniqueConstraintError(err error) bool {
+	if pqErr, ok := err.(*pgx.PgError); ok && pqErr.Code == "23505" {
+		return true
+	}
+	return false
 }
 
 func (s *PgStore) User() store.UserStore {

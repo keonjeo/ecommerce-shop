@@ -13,8 +13,6 @@ import (
 	"golang.org/x/text/language"
 )
 
-const DEFAULT_LOCALE = "en"
-
 // T translates the msg identified by the id
 var T TranslateFunc
 
@@ -85,7 +83,7 @@ func TFuncWithLanguage(locale string) TranslateFunc {
 // GetUserTranslations gets T func by the given locale
 func GetUserTranslations(locale string) TranslateFunc {
 	if _, ok := locales[locale]; !ok {
-		locale = DEFAULT_LOCALE
+		locale = "en"
 	}
 	return TFuncWithLanguage(locale)
 }
@@ -94,7 +92,7 @@ func GetUserTranslations(locale string) TranslateFunc {
 func GetTranslationsAndLocale(w http.ResponseWriter, r *http.Request) (TranslateFunc, string) {
 	headerLocaleFull := strings.Split(r.Header.Get("Accept-Language"), ",")[0]
 	headerLocale := strings.Split(strings.Split(r.Header.Get("Accept-Language"), ",")[0], "-")[0]
-	defaultLocale := DEFAULT_LOCALE
+	defaultLocale := "en"
 	if locales[headerLocaleFull] != "" {
 		return TFuncWithLanguage(headerLocaleFull), headerLocaleFull
 	} else if locales[headerLocale] != "" {

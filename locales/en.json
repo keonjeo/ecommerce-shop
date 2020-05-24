@@ -20,5 +20,21 @@
   {
     "id": "api.user.create_user.app_error",
     "translation": "could not create user"
+  },
+  {
+    "id": "model.user.validate.email.app_error",
+    "translation": "invalid email"
+  },
+  {
+    "id": "model.user.validate.password_limit.app_error",
+    "translation": "password limit exceded"
+  },
+  {
+    "id": "model.user.validate.created_at.app_error",
+    "translation": "invalid created at timestamp"
+  },
+  {
+    "id": "model.user.validate.updated_at.app_error",
+    "translation": "invalid updated at timestamp"
   }
 ]

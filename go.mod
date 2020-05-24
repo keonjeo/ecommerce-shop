@@ -5,7 +5,6 @@ go 1.14
 require (
 	github.com/cockroachdb/apd v1.1.0 // indirect
 	github.com/go-chi/chi v4.0.3+incompatible
-	github.com/go-ozzo/ozzo-validation/v4 v4.2.1
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
 	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect
 	github.com/jackc/pgx v3.6.2+incompatible
