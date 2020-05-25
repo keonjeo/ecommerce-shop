@@ -36,5 +36,13 @@
   {
     "id": "model.user.validate.updated_at.app_error",
     "translation": "invalid updated at timestamp"
+  },
+  {
+    "id": "store.postgres.user.save.app_error",
+    "translation": "could not create user"
+  },
+  {
+    "id": "store.postgres.user.save.unique_constraint.app_error",
+    "translation": "sql unique constraint violation"
   }
 ]

@@ -1,4 +1,4 @@
- CREATE TYPE gender AS ENUM ('m', 'f');
+CREATE TYPE gender AS ENUM ('m', 'f');
 
 CREATE TABLE public.user (
   id integer generated always as identity primary key,
@@ -8,6 +8,7 @@ CREATE TABLE public.user (
   email character varying(255),
   password text,
   gender gender,
+  locale character varying(5),
   avatar_url text,
   active boolean,
   email_verified boolean,

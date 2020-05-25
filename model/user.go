@@ -48,8 +48,8 @@ type User struct {
 	LastName       string    `json:"last_name" db:"last_name"`
 	Username       string    `json:"username" db:"username"`
 	Email          string    `json:"email" db:"email"`
-	Password       string    `json:"password" db:"password"`
-	Gender         string    `json:"gender" db:"gender"`
+	Password       string    `json:"password,omitempty" db:"password"`
+	Gender         *string   `json:"gender" db:"gender"`
 	Locale         string    `json:"locale" db:"locale"`
 	AvatarURL      string    `json:"avatar_url" db:"avatar_url"`
 	Active         bool      `json:"active" db:"active"`

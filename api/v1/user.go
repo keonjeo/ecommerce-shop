@@ -25,16 +25,11 @@ func (a *API) createUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	createdUser, err2 := a.app.CreateUser(user)
-	if err != nil {
+	if err2 != nil {
 		respondError(w, err2)
 		return
 	}
 
-	if err := user.Validate(); err != nil {
-		a.app.Log().Error(err.Error())
-		respondError(w, err)
-		return
-	}
 	respondJSON(w, http.StatusCreated, createdUser)
 }
 
