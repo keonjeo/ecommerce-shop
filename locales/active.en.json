@@ -1,0 +1,17 @@
+{
+  "model.user.validate.created_at.app_error": "invalid created_at timestamp",
+  "model.user.validate.email.app_error": "invalid email",
+  "model.user.validate.first_name.app_error": "invalid first name",
+  "model.user.validate.id.app_error": "uppercase letter required",
+  "model.user.validate.last_name.app_error": "invalid last name",
+  "model.user.validate.locale.app_error": "invalid locale",
+  "model.user.validate.password.app_error": "invalid password length",
+  "model.user.validate.password_lowercase": "lowercase letter required",
+  "model.user.validate.password_numbers": "number required",
+  "model.user.validate.password_symbols": "symbol required",
+  "model.user.validate.password_uppercase": "uppercase letter required",
+  "model.user.validate.updated_at.app_error": "invalid updated_at timestamp",
+  "model.user.validate.username.app_error": "invalid username",
+  "store.postgres.user.save.app_error": "could not save user to db",
+  "store.postgres.user.save.unique_constraint.app_error": "unique constraint error"
+}

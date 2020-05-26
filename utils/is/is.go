@@ -10,7 +10,7 @@ func ValidEmail(email string) bool {
 
 // ValidEmailAndMX checks if the email format is valid and MX record exists
 func ValidEmailAndMX(email string) bool {
-	if err := ValidateFormat(email); err != nil {
+	if err := ValidateHost(email); err != nil {
 		return false
 	}
 	return true

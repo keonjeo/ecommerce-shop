@@ -54,23 +54,23 @@ type CookieSettings struct {
 
 // PasswordSettings contains the password criteria settings
 type PasswordSettings struct {
-	MinLength int
-	MaxLength int
-	Lowercase bool
-	Uppercase bool
-	Number    bool
-	Symbol    bool
+	MinLength int  `json:"PASSWORD_MIN_LENGTH"`
+	MaxLength int  `json:"PASSWORD_MAX_LENGTH"`
+	Lowercase bool `json:"PASSWORD_LOWERCASE"`
+	Uppercase bool `json:"PASSWORD_UPPERCASE"`
+	Number    bool `json:"PASSWORD_NUMBER"`
+	Symbol    bool `json:"PASSWORD_SYMBOL"`
 }
 
 // LoggerSettings contains the logger settings
 type LoggerSettings struct {
-	EnableConsole bool
-	ConsoleJSON   bool
-	ConsoleLevel  string
-	EnableFile    bool
-	FileJSON      bool
-	FileLevel     string
-	FileLocation  string
+	EnableConsole bool   `json:"LOG_ENABLE_CONSOLE"`
+	ConsoleJSON   bool   `json:"LOG_CONSOLE_JSON"`
+	ConsoleLevel  string `json:"LOG_CONSOLE_LEVEL"`
+	EnableFile    bool   `json:"LOG_ENABLE_FILE"`
+	FileJSON      bool   `json:"LOG_FILE_JSON"`
+	FileLevel     string `json:"LOG_FILE_LEVEL"`
+	FileLocation  string `json:"LOG_FILE_LOCATION"`
 }
 
 // Config represents the app config

@@ -1,11 +1,12 @@
 package postgres
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/dankobgd/ecommerce-shop/model"
 	"github.com/dankobgd/ecommerce-shop/store"
+	"github.com/dankobgd/ecommerce-shop/utils/locale"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
 // PgUserStore ...
@@ -25,9 +26,9 @@ func (s PgUserStore) Save(user *model.User) (*model.User, *model.AppError) {
 
 	if err != nil {
 		if IsUniqueConstraintError(err) {
-			return nil, model.NewAppError("PgUserStore.Save", "store.postgres.user.save.unique_constraint.app_error", nil, fmt.Sprintf("userID: %d, %v", user.ID, err.Error()), http.StatusInternalServerError)
+			return nil, model.NewAppError("PgUserStore.Save", locale.GetUserLocalizer(user.Locale), &i18n.Message{ID: "store.postgres.user.save.unique_constraint.app_error", Other: "unique constraint error"}, "", http.StatusInternalServerError)
 		}
-		return nil, model.NewAppError("PgUserStore.Save", "store.postgres.user.save.app_error", nil, fmt.Sprintf("userID: %d, %v", user.ID, err.Error()), http.StatusInternalServerError)
+		return nil, model.NewAppError("PgUserStore.Save", locale.GetUserLocalizer(user.Locale), &i18n.Message{ID: "store.postgres.user.save.app_error", Other: "could not save user to db"}, "", http.StatusInternalServerError)
 	}
 
 	return user, nil

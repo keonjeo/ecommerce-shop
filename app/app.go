@@ -2,7 +2,6 @@ package app
 
 import (
 	"github.com/dankobgd/ecommerce-shop/config"
-	"github.com/dankobgd/ecommerce-shop/utils/locale"
 	"github.com/dankobgd/ecommerce-shop/zlog"
 )
 
@@ -11,7 +10,6 @@ type App struct {
 	srv *Server
 	cfg *config.Config
 	log *zlog.Logger
-	t   locale.TranslateFunc
 }
 
 // Option for the app
@@ -74,17 +72,26 @@ func (a *App) SetLogger(logger *zlog.Logger) {
 	a.log = logger
 }
 
-// GetT retrieves the translate function
-func (a *App) GetT() locale.TranslateFunc {
-	return a.t
+// SetConfig option for the app
+func SetConfig(cfg *config.Config) Option {
+	return func(a *App) error {
+		a.cfg = cfg
+		return nil
+	}
 }
 
-// SetT sets the translate function
-func (a *App) SetT(t locale.TranslateFunc) {
-	a.t = t
+// SetLogger option for the app
+func SetLogger(logger *zlog.Logger) Option {
+	return func(a *App) error {
+		a.log = logger
+		return nil
+	}
 }
 
-// T is Translate function
-func (a *App) T(messageID string, pluralCount interface{}, template interface{}) string {
-	return a.t(messageID, pluralCount, template)
+// SetServer option for the app
+func SetServer(server *Server) Option {
+	return func(a *App) error {
+		a.srv = server
+		return nil
+	}
 }

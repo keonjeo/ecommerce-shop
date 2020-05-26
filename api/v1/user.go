@@ -4,7 +4,9 @@ import (
 	"net/http"
 
 	"github.com/dankobgd/ecommerce-shop/model"
+	"github.com/dankobgd/ecommerce-shop/utils/locale"
 	"github.com/go-chi/chi"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
 func users(a *API) http.Handler {
@@ -20,7 +22,7 @@ func users(a *API) http.Handler {
 func (a *API) createUser(w http.ResponseWriter, r *http.Request) {
 	user, err := model.UserFromJSON(r.Body)
 	if err != nil {
-		respondError(w, model.NewAppError("createUser", "api.user.create_user.app_error", nil, err.Error(), http.StatusInternalServerError))
+		respondError(w, model.NewAppError("createUser", locale.GetUserLocalizer("en"), &i18n.Message{ID: "api.user.create_user.json.app_error"}, err.Error(), http.StatusInternalServerError))
 		return
 	}
 

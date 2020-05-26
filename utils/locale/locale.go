@@ -5,38 +5,39 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"net/http"
 	"path/filepath"
 	"strings"
 
+	"github.com/dankobgd/ecommerce-shop/zlog"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
 )
 
-// T translates the msg identified by the id
-var T TranslateFunc
-
-// TranslateFunc returns the translated msg identified by messageID
-type TranslateFunc func(messageID string, pluralCount interface{}, template interface{}) string
-
-// locales holds the list of all the locales
-var locales map[string]string = make(map[string]string)
-
 // localizers holds the list of all i18n localizers that can be fetched at each request
 var localizers map[string]*i18n.Localizer = make(map[string]*i18n.Localizer)
 
-// LoadTranslations loads the translation files from the locales directory
-func LoadTranslations(b *i18n.Bundle) {
-	b.RegisterUnmarshalFunc("json", json.Unmarshal)
+// InitTranslations loads the translation files from the locales directory
+func InitTranslations() {
+	bundle := i18n.NewBundle(language.English)
+	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
+
 	localesDir := fmt.Sprintf("./locales")
 	files, _ := ioutil.ReadDir(localesDir)
+
 	for _, f := range files {
 		if filepath.Ext(f.Name()) == ".json" {
-			filename := f.Name()
-			locales[strings.Split(filename, ".")[0]] = filepath.Join(localesDir, filename)
-			b.MustLoadMessageFile(fmt.Sprintf("./") + filepath.Join(localesDir, filename))
+			if !strings.HasPrefix(f.Name(), "active.") {
+				continue
+			}
+			if f.Name() == "active.en.json" {
+				continue
+			}
+			bundle.MustLoadMessageFile(fmt.Sprintf("./") + filepath.Join(localesDir, f.Name()))
 		}
 	}
+
+	localizers[language.English.String()] = i18n.NewLocalizer(bundle, language.English.String())
+	localizers[language.Serbian.String()] = i18n.NewLocalizer(bundle, language.Serbian.String())
 }
 
 // GetLocalizer gets the localizer by the specified language key
@@ -49,56 +50,34 @@ func GetLocalizer(lang string) (*i18n.Localizer, error) {
 }
 
 // GetSupportedLocales shows the list of supported locales
-func GetSupportedLocales() map[string]string {
-	return locales
+func GetSupportedLocales() map[string]*i18n.Localizer {
+	return localizers
 }
 
-// InitTranslations configures i18n
-func InitTranslations() {
-	bundle := i18n.NewBundle(language.English)
-	LoadTranslations(bundle)
-	localizers["en"] = i18n.NewLocalizer(bundle, "en")
-	localizers["sr"] = i18n.NewLocalizer(bundle, "sr")
-	T = TFuncWithLanguage("en")
-
+// GetUserLocalizer gets localizer based on user's preference lang
+func GetUserLocalizer(locale string) *i18n.Localizer {
+	if _, ok := localizers[locale]; !ok {
+		locale = language.English.String()
+	}
+	return localizers[locale]
 }
 
-// TFuncWithLanguage returns the TranslateFunc with specific language preference
-func TFuncWithLanguage(locale string) TranslateFunc {
-	localizer, err := GetLocalizer(locale)
+// LocalizeDefaultMessage localizes the provided message
+func LocalizeDefaultMessage(l *i18n.Localizer, m *i18n.Message) string {
+	s, err := l.LocalizeMessage(m)
 	if err != nil {
-		return nil
+		zlog.Warn("could not localize message", zlog.String("messageID", m.ID), zlog.Err(err))
+		return ""
 	}
-
-	return func(messageID string, pluralCount interface{}, template interface{}) string {
-		lc := &i18n.LocalizeConfig{
-			MessageID:    messageID,
-			PluralCount:  pluralCount,
-			TemplateData: template,
-		}
-		return localizer.MustLocalize(lc)
-	}
+	return s
 }
 
-// GetUserTranslations gets T func by the given locale
-func GetUserTranslations(locale string) TranslateFunc {
-	if _, ok := locales[locale]; !ok {
-		locale = "en"
+// LocalizeWithConfig localizes with the provided config
+func LocalizeWithConfig(l *i18n.Localizer, lc *i18n.LocalizeConfig) string {
+	s, err := l.Localize(lc)
+	if err != nil {
+		zlog.Warn("could not localize message with config", zlog.Err(err))
+		return ""
 	}
-	return TFuncWithLanguage(locale)
-}
-
-// GetTranslationsAndLocale gets T fun together with locale from req headers
-func GetTranslationsAndLocale(w http.ResponseWriter, r *http.Request) (TranslateFunc, string) {
-	headerLocaleFull := strings.Split(r.Header.Get("Accept-Language"), ",")[0]
-	headerLocale := strings.Split(strings.Split(r.Header.Get("Accept-Language"), ",")[0], "-")[0]
-	defaultLocale := "en"
-	if locales[headerLocaleFull] != "" {
-		return TFuncWithLanguage(headerLocaleFull), headerLocaleFull
-	} else if locales[headerLocale] != "" {
-		return TFuncWithLanguage(headerLocale), headerLocale
-	} else if locales[defaultLocale] != "" {
-		return TFuncWithLanguage(defaultLocale), headerLocale
-	}
-	return TFuncWithLanguage(defaultLocale), defaultLocale
+	return s
 }
