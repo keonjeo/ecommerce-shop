@@ -59,8 +59,6 @@ var (
 	errMsgValidatePasswordSymbols   = &i18n.Message{ID: "model.user.validate.password_symbols", Other: "symbol required"}
 )
 
-// GenValidateErrMsgID generates validation message error id
-
 // User represents the shop user model
 type User struct {
 	ID             int       `json:"id" db:"id"`
