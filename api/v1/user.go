@@ -21,13 +21,13 @@ func (a *API) createUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createdUser, err2 := a.app.CreateUser(user)
+	ruser, err2 := a.app.CreateUser(user)
 	if err2 != nil {
 		respondError(w, err2)
 		return
 	}
 
-	respondJSON(w, http.StatusCreated, createdUser)
+	respondJSON(w, http.StatusCreated, ruser)
 }
 
 func (a *API) login(w http.ResponseWriter, r *http.Request) {
