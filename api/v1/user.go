@@ -5,18 +5,13 @@ import (
 
 	"github.com/dankobgd/ecommerce-shop/model"
 	"github.com/dankobgd/ecommerce-shop/utils/locale"
-	"github.com/go-chi/chi"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
-func users(a *API) http.Handler {
-	r := chi.NewRouter()
-
-	r.Post("/", a.createUser)
-	r.Post("/login", a.login)
-	// r.Get("/{user_id:[A-Za-z0-9]+}", a.getUser)
-
-	return r
+// InitUser inits the user routes
+func InitUser(a *API) {
+	a.BaseRoutes.Users.Post("/", a.createUser)
+	a.BaseRoutes.Users.Post("/login", a.login)
 }
 
 func (a *API) createUser(w http.ResponseWriter, r *http.Request) {
