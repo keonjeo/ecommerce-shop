@@ -121,36 +121,36 @@ func IsValidLocale(locale string) bool {
 // IsValidPasswordCriteria checks if password fulfills the criteria
 func IsValidPasswordCriteria(password string, settings *config.PasswordSettings) *AppErr {
 	if len(password) < settings.MinLength || len(password) > settings.MaxLength {
-		return NewInvalidUserError(msgValidatePasswordLowercase, 0)
+		return NewInvalidUserError(msgValidatePasswordLowercase, nil)
 	}
 	if settings.Lowercase {
 		if !strings.ContainsAny(password, lowercaseLetters) {
-			return NewInvalidUserError(msgValidatePassword, 0)
+			return NewInvalidUserError(msgValidatePassword, nil)
 		}
 	}
 	if settings.Uppercase {
 		if !strings.ContainsAny(password, uppercaseLetters) {
-			return NewInvalidUserError(msgValidatePasswordUppercase, 0)
+			return NewInvalidUserError(msgValidatePasswordUppercase, nil)
 		}
 	}
 	if settings.Number {
 		if !strings.ContainsAny(password, numbers) {
-			return NewInvalidUserError(msgValidatePasswordNumbers, 0)
+			return NewInvalidUserError(msgValidatePasswordNumbers, nil)
 		}
 	}
 	if settings.Symbol {
 		if !strings.ContainsAny(password, symbols) {
-			return NewInvalidUserError(msgValidatePasswordSymbols, 0)
+			return NewInvalidUserError(msgValidatePasswordSymbols, nil)
 		}
 	}
 	return nil
 }
 
 // NewInvalidUserError builds the invalid user error
-func NewInvalidUserError(msg *i18n.Message, userID int) *AppErr {
+func NewInvalidUserError(msg *i18n.Message, user *User) *AppErr {
 	details := map[string]interface{}{}
-	if userID != 0 {
-		details["userID"] = "userID"
+	if user != nil {
+		details["userID"] = user.ID
 	}
 	return NewAppErr("User.Validate", ErrInvalid, locale.GetUserLocalizer("en"), msg, http.StatusUnprocessableEntity, details)
 }
@@ -158,34 +158,34 @@ func NewInvalidUserError(msg *i18n.Message, userID int) *AppErr {
 // Validate validates the user and returns an error if it doesn't pass criteria
 func (u *User) Validate() *AppErr {
 	if u.ID < 0 {
-		return NewInvalidUserError(msgValidateID, u.ID)
+		return NewInvalidUserError(msgValidateID, u)
 	}
 	if u.CreatedAt.IsZero() {
-		return NewInvalidUserError(msgValidateCreatedAt, u.ID)
+		return NewInvalidUserError(msgValidateCreatedAt, u)
 	}
 	if u.UpdatedAt.IsZero() {
-		return NewInvalidUserError(msgValidateUpdatedAt, u.ID)
+		return NewInvalidUserError(msgValidateUpdatedAt, u)
 	}
 	if !IsValidUsername(u.Username) {
-		return NewInvalidUserError(msgValidateUsername, u.ID)
+		return NewInvalidUserError(msgValidateUsername, u)
 	}
 	if len(u.Email) > userEmailMaxLength || len(u.Email) == 0 || !is.ValidEmail(u.Email) {
-		return NewInvalidUserError(msgValidateEmail, u.ID)
+		return NewInvalidUserError(msgValidateEmail, u)
 	}
 	if utf8.RuneCountInString(u.Username) > userUsernameMaxRunes {
-		return NewInvalidUserError(msgValidateUsername, u.ID)
+		return NewInvalidUserError(msgValidateUsername, u)
 	}
 	if utf8.RuneCountInString(u.FirstName) > userFirstnameMaxRunes {
-		return NewInvalidUserError(msgValidateFirstName, u.ID)
+		return NewInvalidUserError(msgValidateFirstName, u)
 	}
 	if utf8.RuneCountInString(u.LastName) > userLastnameMaxRunes {
-		return NewInvalidUserError(msgValidateLastName, u.ID)
+		return NewInvalidUserError(msgValidateLastName, u)
 	}
 	if len(u.Password) > userPasswordMaxLength {
-		return NewInvalidUserError(msgValidatePassword, u.ID)
+		return NewInvalidUserError(msgValidatePassword, u)
 	}
 	if !IsValidLocale(u.Locale) {
-		return NewInvalidUserError(msgValidateLocale, u.ID)
+		return NewInvalidUserError(msgValidateLocale, u)
 	}
 	return nil
 }
