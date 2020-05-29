@@ -6,7 +6,7 @@ import (
 )
 
 // CreateUser creates the new user in the system
-func (a *App) CreateUser(user *model.User) (*model.User, *model.AppError) {
+func (a *App) CreateUser(user *model.User) (*model.User, *model.AppErr) {
 	user.PreSave()
 	if err := user.Validate(); err != nil {
 		return nil, err

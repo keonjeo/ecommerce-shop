@@ -2,7 +2,6 @@ package model
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"regexp"
@@ -43,20 +42,19 @@ var restrictedUsernames = []string{"app", "api", "admin", "system"}
 var validUsernameChars = regexp.MustCompile(`^[a-z0-9\.\-_]+$`)
 
 var (
-	errMsgValidateID        = &i18n.Message{ID: "model.user.validate.id.app_error", Other: "uppercase letter required"}
-	errMsgValidateCreatedAt = &i18n.Message{ID: "model.user.validate.created_at.app_error", Other: "invalid created_at timestamp"}
-	errMsgValidateUpdatedAt = &i18n.Message{ID: "model.user.validate.updated_at.app_error", Other: "invalid updated_at timestamp"}
-	errMsgValidateUsername  = &i18n.Message{ID: "model.user.validate.username.app_error", Other: "invalid username"}
-	errMsgValidateEmail     = &i18n.Message{ID: "model.user.validate.email.app_error", Other: "invalid email"}
-	errMsgValidateFirstName = &i18n.Message{ID: "model.user.validate.first_name.app_error", Other: "invalid first name"}
-	errMsgValidateLastName  = &i18n.Message{ID: "model.user.validate.last_name.app_error", Other: "invalid last name"}
-	errMsgValidatePassword  = &i18n.Message{ID: "model.user.validate.password.app_error", Other: "invalid password length"}
-	errMsgValidateLocale    = &i18n.Message{ID: "model.user.validate.locale.app_error", Other: "invalid locale"}
-
-	errMsgValidatePasswordUppercase = &i18n.Message{ID: "model.user.validate.password_uppercase", Other: "uppercase letter required"}
-	errMsgValidatePasswordLowercase = &i18n.Message{ID: "model.user.validate.password_lowercase", Other: "lowercase letter required"}
-	errMsgValidatePasswordNumbers   = &i18n.Message{ID: "model.user.validate.password_numbers", Other: "number required"}
-	errMsgValidatePasswordSymbols   = &i18n.Message{ID: "model.user.validate.password_symbols", Other: "symbol required"}
+	msgValidateID                = &i18n.Message{ID: "model.user.validate.id.app_error", Other: "uppercase letter required"}
+	msgValidateCreatedAt         = &i18n.Message{ID: "model.user.validate.created_at.app_error", Other: "invalid created_at timestamp"}
+	msgValidateUpdatedAt         = &i18n.Message{ID: "model.user.validate.updated_at.app_error", Other: "invalid updated_at timestamp"}
+	msgValidateUsername          = &i18n.Message{ID: "model.user.validate.username.app_error", Other: "invalid username"}
+	msgValidateEmail             = &i18n.Message{ID: "model.user.validate.email.app_error", Other: "invalid email"}
+	msgValidateFirstName         = &i18n.Message{ID: "model.user.validate.first_name.app_error", Other: "invalid first name"}
+	msgValidateLastName          = &i18n.Message{ID: "model.user.validate.last_name.app_error", Other: "invalid last name"}
+	msgValidatePassword          = &i18n.Message{ID: "model.user.validate.password.app_error", Other: "invalid password length"}
+	msgValidateLocale            = &i18n.Message{ID: "model.user.validate.locale.app_error", Other: "invalid locale"}
+	msgValidatePasswordUppercase = &i18n.Message{ID: "model.user.validate.password_uppercase", Other: "uppercase letter required"}
+	msgValidatePasswordLowercase = &i18n.Message{ID: "model.user.validate.password_lowercase", Other: "lowercase letter required"}
+	msgValidatePasswordNumbers   = &i18n.Message{ID: "model.user.validate.password_numbers", Other: "number required"}
+	msgValidatePasswordSymbols   = &i18n.Message{ID: "model.user.validate.password_symbols", Other: "symbol required"}
 )
 
 // User represents the shop user model
@@ -121,73 +119,73 @@ func IsValidLocale(locale string) bool {
 }
 
 // IsValidPasswordCriteria checks if password fulfills the criteria
-func IsValidPasswordCriteria(password string, settings *config.PasswordSettings) *AppError {
+func IsValidPasswordCriteria(password string, settings *config.PasswordSettings) *AppErr {
 	if len(password) < settings.MinLength || len(password) > settings.MaxLength {
-		return NewInvalidUserError(errMsgValidatePasswordLowercase, 0)
+		return NewInvalidUserError(msgValidatePasswordLowercase, 0)
 	}
 	if settings.Lowercase {
 		if !strings.ContainsAny(password, lowercaseLetters) {
-			return NewInvalidUserError(errMsgValidatePassword, 0)
+			return NewInvalidUserError(msgValidatePassword, 0)
 		}
 	}
 	if settings.Uppercase {
 		if !strings.ContainsAny(password, uppercaseLetters) {
-			return NewInvalidUserError(errMsgValidatePasswordUppercase, 0)
+			return NewInvalidUserError(msgValidatePasswordUppercase, 0)
 		}
 	}
 	if settings.Number {
 		if !strings.ContainsAny(password, numbers) {
-			return NewInvalidUserError(errMsgValidatePasswordNumbers, 0)
+			return NewInvalidUserError(msgValidatePasswordNumbers, 0)
 		}
 	}
 	if settings.Symbol {
 		if !strings.ContainsAny(password, symbols) {
-			return NewInvalidUserError(errMsgValidatePasswordSymbols, 0)
+			return NewInvalidUserError(msgValidatePasswordSymbols, 0)
 		}
 	}
 	return nil
 }
 
 // NewInvalidUserError builds the invalid user error
-func NewInvalidUserError(msg *i18n.Message, userID int) *AppError {
-	details := ""
+func NewInvalidUserError(msg *i18n.Message, userID int) *AppErr {
+	details := map[string]interface{}{}
 	if userID != 0 {
-		details = fmt.Sprintf("userID: %d", userID)
+		details["userID"] = "userID"
 	}
-	return NewAppError("User.Validate", locale.GetUserLocalizer("en"), msg, details, http.StatusBadRequest)
+	return NewAppErr("User.Validate", ErrInvalid, locale.GetUserLocalizer("en"), msg, http.StatusUnprocessableEntity, details)
 }
 
 // Validate validates the user and returns an error if it doesn't pass criteria
-func (u *User) Validate() *AppError {
+func (u *User) Validate() *AppErr {
 	if u.ID < 0 {
-		return NewInvalidUserError(errMsgValidateID, u.ID)
+		return NewInvalidUserError(msgValidateID, u.ID)
 	}
 	if u.CreatedAt.IsZero() {
-		return NewInvalidUserError(errMsgValidateCreatedAt, u.ID)
+		return NewInvalidUserError(msgValidateCreatedAt, u.ID)
 	}
 	if u.UpdatedAt.IsZero() {
-		return NewInvalidUserError(errMsgValidateUpdatedAt, u.ID)
+		return NewInvalidUserError(msgValidateUpdatedAt, u.ID)
 	}
 	if !IsValidUsername(u.Username) {
-		return NewInvalidUserError(errMsgValidateUsername, u.ID)
+		return NewInvalidUserError(msgValidateUsername, u.ID)
 	}
 	if len(u.Email) > userEmailMaxLength || len(u.Email) == 0 || !is.ValidEmail(u.Email) {
-		return NewInvalidUserError(errMsgValidateEmail, u.ID)
+		return NewInvalidUserError(msgValidateEmail, u.ID)
 	}
 	if utf8.RuneCountInString(u.Username) > userUsernameMaxRunes {
-		return NewInvalidUserError(errMsgValidateUsername, u.ID)
+		return NewInvalidUserError(msgValidateUsername, u.ID)
 	}
 	if utf8.RuneCountInString(u.FirstName) > userFirstnameMaxRunes {
-		return NewInvalidUserError(errMsgValidateFirstName, u.ID)
+		return NewInvalidUserError(msgValidateFirstName, u.ID)
 	}
 	if utf8.RuneCountInString(u.LastName) > userLastnameMaxRunes {
-		return NewInvalidUserError(errMsgValidateLastName, u.ID)
+		return NewInvalidUserError(msgValidateLastName, u.ID)
 	}
 	if len(u.Password) > userPasswordMaxLength {
-		return NewInvalidUserError(errMsgValidatePassword, u.ID)
+		return NewInvalidUserError(msgValidatePassword, u.ID)
 	}
 	if !IsValidLocale(u.Locale) {
-		return NewInvalidUserError(errMsgValidateLocale, u.ID)
+		return NewInvalidUserError(msgValidateLocale, u.ID)
 	}
 	return nil
 }

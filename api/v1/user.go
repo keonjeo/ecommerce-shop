@@ -8,6 +8,10 @@ import (
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
+var (
+	msgUserFromJSON = &i18n.Message{ID: "api.user.create_user.json.app_error", Other: "could not decode user json data"}
+)
+
 // InitUser inits the user routes
 func InitUser(a *API) {
 	a.BaseRoutes.Users.Post("/", a.createUser)
@@ -17,7 +21,7 @@ func InitUser(a *API) {
 func (a *API) createUser(w http.ResponseWriter, r *http.Request) {
 	user, err := model.UserFromJSON(r.Body)
 	if err != nil {
-		respondError(w, model.NewAppError("createUser", locale.GetUserLocalizer("en"), &i18n.Message{ID: "api.user.create_user.json.app_error"}, err.Error(), http.StatusInternalServerError))
+		respondError(w, model.NewAppErr("createUser", model.ErrInternal, locale.GetUserLocalizer("en"), msgUserFromJSON, http.StatusInternalServerError, nil))
 		return
 	}
 

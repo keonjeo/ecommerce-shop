@@ -20,7 +20,7 @@ func respondJSON(w http.ResponseWriter, code int, obj interface{}) error {
 	return err
 }
 
-func respondError(w http.ResponseWriter, appErr *model.AppError) error {
+func respondError(w http.ResponseWriter, appErr *model.AppErr) error {
 	b, err := json.Marshal(appErr)
 	if err != nil {
 		return fmt.Errorf("could not encode json response: %v - %v", appErr, err)
