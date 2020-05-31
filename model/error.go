@@ -38,16 +38,12 @@ func NewAppErr(op string, code string, l *i18n.Localizer, msg *i18n.Message, sta
 		StatusCode: statusCode,
 		Details:    details,
 	}
-	e.Message = translate(l, msg)
+	e.Message = locale.LocalizeDefaultMessage(l, msg)
 	return e
 }
 
 func (e *AppErr) Error() string {
 	return fmt.Sprintf("%v, %v: %v\n", e.Code, e.Op, e.Message)
-}
-
-func translate(l *i18n.Localizer, msg *i18n.Message) string {
-	return locale.LocalizeDefaultMessage(l, msg)
 }
 
 // ToJSON converts AppErr to json string
@@ -78,6 +74,6 @@ func (list ValidationErrors) IsZero() bool {
 // NewValidationErr creates the validationErr
 func NewValidationErr(key string, l *i18n.Localizer, msg *i18n.Message) *ValidationErr {
 	e := &ValidationErr{Key: key}
-	e.Message = translate(l, msg)
+	e.Message = locale.LocalizeDefaultMessage(l, msg)
 	return e
 }

@@ -41,23 +41,25 @@ var reservedNames = []string{"app", "api", "admin", "signup", "login", "oauth", 
 var restrictedUsernames = []string{"app", "api", "admin", "system"}
 var validUsernameChars = regexp.MustCompile(`^[a-z0-9\.\-_]+$`)
 
+// messages for localization
 var (
-	msgInvalidUser               = &i18n.Message{ID: "model.user.validate.app_error", Other: "invalid user data"}
-	msgValidateID                = &i18n.Message{ID: "model.user.validate.id.app_error", Other: "uppercase letter required"}
-	msgValidateCreatedAt         = &i18n.Message{ID: "model.user.validate.created_at.app_error", Other: "invalid created_at timestamp"}
-	msgValidateUpdatedAt         = &i18n.Message{ID: "model.user.validate.updated_at.app_error", Other: "invalid updated_at timestamp"}
-	msgValidateUsername          = &i18n.Message{ID: "model.user.validate.username.app_error", Other: "invalid username"}
-	msgValidateEmail             = &i18n.Message{ID: "model.user.validate.email.app_error", Other: "invalid email"}
-	msgValidateFirstName         = &i18n.Message{ID: "model.user.validate.first_name.app_error", Other: "invalid first name"}
-	msgValidateLastName          = &i18n.Message{ID: "model.user.validate.last_name.app_error", Other: "invalid last name"}
-	msgValidatePassword          = &i18n.Message{ID: "model.user.validate.password.app_error", Other: "invalid password"}
-	msgValidateConfirmPw         = &i18n.Message{ID: "model.user.validate.confirm_password.app_error", Other: "invalid confirm password"}
-	msgValidateLocale            = &i18n.Message{ID: "model.user.validate.locale.app_error", Other: "invalid locale"}
-	msgValidatePasswordLength    = &i18n.Message{ID: "model.user.validate.password_length", Other: "invalid password length"}
-	msgValidatePasswordUppercase = &i18n.Message{ID: "model.user.validate.password_uppercase", Other: "uppercase letter required"}
-	msgValidatePasswordLowercase = &i18n.Message{ID: "model.user.validate.password_lowercase", Other: "lowercase letter required"}
-	msgValidatePasswordNumber    = &i18n.Message{ID: "model.user.validate.password_numbers", Other: "number required"}
-	msgValidatePasswordSymbol    = &i18n.Message{ID: "model.user.validate.password_symbols", Other: "symbol required"}
+	MsgInvalidUser            = &i18n.Message{ID: "model.user.validate.app_error", Other: "invalid user data"}
+	MsgValidateUserID         = &i18n.Message{ID: "model.user.validate.id.app_error", Other: "uppercase letter required"}
+	MsgValidateUserCrAt       = &i18n.Message{ID: "model.user.validate.created_at.app_error", Other: "invalid created_at timestamp"}
+	MsgValidateUserUpAt       = &i18n.Message{ID: "model.user.validate.updated_at.app_error", Other: "invalid updated_at timestamp"}
+	MsgValidateUsername       = &i18n.Message{ID: "model.user.validate.username.app_error", Other: "invalid username"}
+	MsgValidateUserEmail      = &i18n.Message{ID: "model.user.validate.email.app_error", Other: "invalid email"}
+	MsgValidateUserFName      = &i18n.Message{ID: "model.user.validate.first_name.app_error", Other: "invalid first name"}
+	MsgValidateUserLName      = &i18n.Message{ID: "model.user.validate.last_name.app_error", Other: "invalid last name"}
+	MsgValidateUserPwd        = &i18n.Message{ID: "model.user.validate.password.app_error", Other: "invalid password"}
+	MsgValidateUserConfirmPwd = &i18n.Message{ID: "model.user.validate.confirm_password.app_error", Other: "invalid confirm password"}
+	MsgValidateUserLocale     = &i18n.Message{ID: "model.user.validate.locale.app_error", Other: "invalid locale"}
+	MsgValidatePwdLength      = &i18n.Message{ID: "model.user.validate.password_length.app_error", Other: "invalid password length"}
+	MsgValidatePwdUpper       = &i18n.Message{ID: "model.user.validate.password_uppercase.app_error", Other: "uppercase letter required"}
+	MsgValidatePwdLower       = &i18n.Message{ID: "model.user.validate.password_lowercase.app_error", Other: "lowercase letter required"}
+	MsgValidatePwdNumber      = &i18n.Message{ID: "model.user.validate.password_numbers.app_error", Other: "number required"}
+	MsgValidatePwdSymbol      = &i18n.Message{ID: "model.user.validate.password_symbols.app_error", Other: "symbol required"}
+	MsgComparePwd             = &i18n.Message{ID: "model.compare_password.app_error", Other: "passwords don't match"}
 )
 
 // User represents the shop user model
@@ -129,31 +131,31 @@ func IsValidPasswordCriteria(password string, settings *config.PasswordSettings)
 	l := locale.GetUserLocalizer("en")
 
 	if len(password) < settings.MinLength || len(password) > settings.MaxLength {
-		errs.Add(NewValidationErr("password", l, msgValidatePasswordLength))
+		errs.Add(NewValidationErr("password", l, MsgValidatePwdLength))
 	}
 	if settings.Lowercase {
 		if !strings.ContainsAny(password, lowercaseLetters) {
-			errs.Add(NewValidationErr("password", l, msgValidatePasswordLowercase))
+			errs.Add(NewValidationErr("password", l, MsgValidatePwdLower))
 		}
 	}
 	if settings.Uppercase {
 		if !strings.ContainsAny(password, uppercaseLetters) {
-			errs.Add(NewValidationErr("password", l, msgValidatePasswordUppercase))
+			errs.Add(NewValidationErr("password", l, MsgValidatePwdUpper))
 		}
 	}
 	if settings.Number {
 		if !strings.ContainsAny(password, numbers) {
-			errs.Add(NewValidationErr("password", l, msgValidatePasswordNumber))
+			errs.Add(NewValidationErr("password", l, MsgValidatePwdNumber))
 		}
 	}
 	if settings.Symbol {
 		if !strings.ContainsAny(password, symbols) {
-			errs.Add(NewValidationErr("password", l, msgValidatePasswordSymbol))
+			errs.Add(NewValidationErr("password", l, MsgValidatePwdSymbol))
 		}
 	}
 
 	if !errs.IsZero() {
-		return NewInvalidUserError(msgInvalidUser, nil, errs)
+		return NewInvalidUserError(MsgInvalidUser, nil, errs)
 	}
 	return nil
 }
@@ -176,44 +178,44 @@ func (u *User) Validate() *AppErr {
 	l := locale.GetUserLocalizer("en")
 
 	if u.ID < 0 {
-		errs.Add(NewValidationErr("id", l, msgValidateID))
+		errs.Add(NewValidationErr("id", l, MsgValidateUserID))
 	}
 	if u.CreatedAt.IsZero() {
-		errs.Add(NewValidationErr("created_at", l, msgValidateCreatedAt))
+		errs.Add(NewValidationErr("created_at", l, MsgValidateUserCrAt))
 	}
 	if u.UpdatedAt.IsZero() {
-		errs.Add(NewValidationErr("updated_at", l, msgValidateUpdatedAt))
+		errs.Add(NewValidationErr("updated_at", l, MsgValidateUserUpAt))
 	}
 	if !IsValidUsername(u.Username) {
-		errs.Add(NewValidationErr("username", l, msgValidateUsername))
+		errs.Add(NewValidationErr("username", l, MsgValidateUsername))
 	}
 	if len(u.Email) > userEmailMaxLength || len(u.Email) == 0 || !is.ValidEmail(u.Email) {
-		errs.Add(NewValidationErr("email", l, msgValidateEmail))
+		errs.Add(NewValidationErr("email", l, MsgValidateUserEmail))
 	}
 	if utf8.RuneCountInString(u.Username) > userUsernameMaxRunes {
-		errs.Add(NewValidationErr("username", l, msgValidateUsername))
+		errs.Add(NewValidationErr("username", l, MsgValidateUsername))
 	}
 	if utf8.RuneCountInString(u.FirstName) > userFirstnameMaxRunes {
-		errs.Add(NewValidationErr("first_name", l, msgValidateFirstName))
+		errs.Add(NewValidationErr("first_name", l, MsgValidateUserFName))
 	}
 	if utf8.RuneCountInString(u.LastName) > userLastnameMaxRunes {
-		errs.Add(NewValidationErr("last_name", l, msgValidateLastName))
+		errs.Add(NewValidationErr("last_name", l, MsgValidateUserLName))
 	}
 	if len(u.rawpw) == 0 || len(u.rawpw) > userPasswordMaxLength {
-		errs.Add(NewValidationErr("password", l, msgValidatePassword))
+		errs.Add(NewValidationErr("password", l, MsgValidateUserPwd))
 	}
 	if len(u.ConfirmPassword) == 0 || len(u.ConfirmPassword) > userPasswordMaxLength {
-		errs.Add(NewValidationErr("confirm_password", l, msgValidateConfirmPw))
+		errs.Add(NewValidationErr("confirm_password", l, MsgValidateUserConfirmPwd))
 	}
 	if u.ConfirmPassword != u.rawpw {
-		errs.Add(NewValidationErr("confirm_password", l, msgValidateConfirmPw))
+		errs.Add(NewValidationErr("confirm_password", l, MsgValidateUserConfirmPwd))
 	}
 	if !IsValidLocale(u.Locale) {
-		errs.Add(NewValidationErr("locale", l, msgValidateLocale))
+		errs.Add(NewValidationErr("locale", l, MsgValidateUserLocale))
 	}
 
 	if !errs.IsZero() {
-		return NewInvalidUserError(msgInvalidUser, u, errs)
+		return NewInvalidUserError(MsgInvalidUser, u, errs)
 	}
 	return nil
 }
