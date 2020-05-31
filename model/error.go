@@ -20,29 +20,25 @@ const (
 
 // AppErr is the main app error
 type AppErr struct {
-	ID         string `json:"id"`            // unique string which is the same as translation id
-	Op         string `json:"op"`            // operation where it failed (Struct.Func)
-	Code       string `json:"code"`          // machine readable error code
-	StatusCode int    `json:"status_code"`   // http status code
-	Message    string `json:"message"`       // meaningful end user message
-	Err        error  `json:"err,omitempty"` // embeded error
-
-	Msg     *i18n.Message          `json:"-"`
-	Details map[string]interface{} `json:"details,omitempty"`
+	ID         string      `json:"id"`            // unique string which is the same as translation id
+	Op         string      `json:"op"`            // operation where it failed (Struct.Func)
+	Code       string      `json:"code"`          // machine readable error code
+	StatusCode int         `json:"status_code"`   // http status code
+	Message    string      `json:"message"`       // meaningful end user message
+	Err        error       `json:"err,omitempty"` // embeded error
+	Details    interface{} `json:"details,omitempty"`
 }
 
 // NewAppErr creates the new app error
-func NewAppErr(op string, code string, l *i18n.Localizer, msg *i18n.Message, statusCode int, details map[string]interface{}) *AppErr {
+func NewAppErr(op string, code string, l *i18n.Localizer, msg *i18n.Message, statusCode int, details interface{}) *AppErr {
 	e := &AppErr{
 		ID:         msg.ID,
 		Op:         op,
 		Code:       code,
 		StatusCode: statusCode,
 		Details:    details,
-		Msg:        msg,
 	}
-
-	e.Localize(l)
+	e.Message = translate(l, msg)
 	return e
 }
 
@@ -50,10 +46,8 @@ func (e *AppErr) Error() string {
 	return fmt.Sprintf("%v, %v: %v\n", e.Code, e.Op, e.Message)
 }
 
-// Localize translates the error message
-func (e *AppErr) Localize(l *i18n.Localizer) {
-	msg := locale.LocalizeDefaultMessage(l, e.Msg)
-	e.Message = msg
+func translate(l *i18n.Localizer, msg *i18n.Message) string {
+	return locale.LocalizeDefaultMessage(l, msg)
 }
 
 // ToJSON converts AppErr to json string
@@ -62,27 +56,28 @@ func (e *AppErr) ToJSON() string {
 	return string(b)
 }
 
-// ErrorCode returns the code of the root error, if available. Otherwise returns ErrInternal
-func ErrorCode(err error) string {
-	if err == nil {
-		return ""
-	} else if e, ok := err.(*AppErr); ok && e.Code != "" {
-		return e.Code
-	} else if ok && e.Err != nil {
-		return ErrorCode(e.Err)
-	}
-	return ErrInternal
+// ValidationErr holds the key and the message of the field that had errors
+type ValidationErr struct {
+	Key     string `json:"key"`
+	Message string `json:"message"`
 }
 
-// ErrorMessage returns the human-readable message of the error, if available
-// Otherwise returns a generic error message
-func ErrorMessage(err error) string {
-	if err == nil {
-		return ""
-	} else if e, ok := err.(*AppErr); ok && e.Message != "" {
-		return e.Message
-	} else if ok && e.Err != nil {
-		return ErrorMessage(e.Err)
-	}
-	return "an internal error has occurred, please contact support"
+// ValidationErrors is a list of validation errors
+type ValidationErrors []*ValidationErr
+
+// Add appends the new error to the list
+func (list *ValidationErrors) Add(verr *ValidationErr) {
+	*list = append(*list, verr)
+}
+
+// IsZero returns true if there are no errors
+func (list ValidationErrors) IsZero() bool {
+	return len(list) == 0
+}
+
+// NewValidationErr creates the validationErr
+func NewValidationErr(key string, l *i18n.Localizer, msg *i18n.Message) *ValidationErr {
+	e := &ValidationErr{Key: key}
+	e.Message = translate(l, msg)
+	return e
 }

@@ -54,23 +54,23 @@ type CookieSettings struct {
 
 // PasswordSettings contains the password criteria settings
 type PasswordSettings struct {
-	MinLength int  `json:"PASSWORD_MIN_LENGTH"`
-	MaxLength int  `json:"PASSWORD_MAX_LENGTH"`
-	Lowercase bool `json:"PASSWORD_LOWERCASE"`
-	Uppercase bool `json:"PASSWORD_UPPERCASE"`
-	Number    bool `json:"PASSWORD_NUMBER"`
-	Symbol    bool `json:"PASSWORD_SYMBOL"`
+	MinLength int  `envconfig:"PASSWORD_MIN_LENGTH"`
+	MaxLength int  `envconfig:"PASSWORD_MAX_LENGTH"`
+	Lowercase bool `envconfig:"PASSWORD_LOWERCASE"`
+	Uppercase bool `envconfig:"PASSWORD_UPPERCASE"`
+	Number    bool `envconfig:"PASSWORD_NUMBER"`
+	Symbol    bool `envconfig:"PASSWORD_SYMBOL"`
 }
 
 // LoggerSettings contains the logger settings
 type LoggerSettings struct {
-	EnableConsole bool   `json:"LOG_ENABLE_CONSOLE"`
-	ConsoleJSON   bool   `json:"LOG_CONSOLE_JSON"`
-	ConsoleLevel  string `json:"LOG_CONSOLE_LEVEL"`
-	EnableFile    bool   `json:"LOG_ENABLE_FILE"`
-	FileJSON      bool   `json:"LOG_FILE_JSON"`
-	FileLevel     string `json:"LOG_FILE_LEVEL"`
-	FileLocation  string `json:"LOG_FILE_LOCATION"`
+	EnableConsole bool   `envconfig:"LOG_ENABLE_CONSOLE"`
+	ConsoleJSON   bool   `envconfig:"LOG_CONSOLE_JSON"`
+	ConsoleLevel  string `envconfig:"LOG_CONSOLE_LEVEL"`
+	EnableFile    bool   `envconfig:"LOG_ENABLE_FILE"`
+	FileJSON      bool   `envconfig:"LOG_FILE_JSON"`
+	FileLevel     string `envconfig:"LOG_FILE_LEVEL"`
+	FileLocation  string `envconfig:"LOG_FILE_LOCATION"`
 }
 
 // Config represents the app config
@@ -85,7 +85,7 @@ type Config struct {
 }
 
 func loadEnvironment() {
-	err := godotenv.Load()
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("error loading .env file: %v", err)
 	}
@@ -105,13 +105,15 @@ func (c *Config) ApplyDefaults() {
 // New creates the new config
 func New() *Config {
 	loadEnvironment()
-
 	cfg := &Config{}
+
+	// ENV variables have the highest priority
+	// they override the defaults set in the cfg
+	cfg.ApplyDefaults()
+
 	if err := envconfig.Process("", cfg); err != nil {
 		panic(err)
 	}
-
-	cfg.ApplyDefaults()
 
 	return cfg
 }

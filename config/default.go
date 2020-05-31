@@ -98,22 +98,22 @@ func (s *CookieSettings) SetDefaults() {
 // SetDefaults sets default values for PasswordSettings
 func (s *PasswordSettings) SetDefaults() {
 	if s.MinLength == 0 {
-		s.MinLength = 0
+		s.MinLength = 5
 	}
 	if s.MaxLength == 0 {
-		s.MaxLength = 0
+		s.MaxLength = 60
 	}
 	if s.Lowercase == false {
-		s.Lowercase = false
+		s.Lowercase = true
 	}
 	if s.Uppercase == false {
-		s.Uppercase = false
+		s.Uppercase = true
 	}
 	if s.Number == false {
-		s.Number = false
+		s.Number = true
 	}
 	if s.Symbol == false {
-		s.Symbol = false
+		s.Symbol = true
 	}
 }
 
