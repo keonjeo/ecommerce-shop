@@ -9,6 +9,19 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// postgres error codes
+const (
+	uniqueConstraintViolation = "23505"
+)
+
+// IsUniqueConstraintError checks for postgres unique constraint error code
+func IsUniqueConstraintError(err error) bool {
+	if pqErr, ok := err.(pgx.PgError); ok && pqErr.Code == uniqueConstraintViolation {
+		return true
+	}
+	return false
+}
+
 // PgStore has the pg db driver
 type PgStore struct {
 	db     *sqlx.DB
@@ -16,8 +29,7 @@ type PgStore struct {
 }
 
 type providedStores struct {
-	user    store.UserStore
-	product store.ProductStore
+	user store.UserStore
 }
 
 // Connect establishes connection to postgres db
@@ -36,23 +48,11 @@ func NewStore(db *sqlx.DB) *PgStore {
 	pgst := &PgStore{db: db}
 
 	pgst.stores.user = newPgUserStore(pgst)
-	pgst.stores.product = newPgProductStore(pgst)
 
 	return pgst
 }
 
-// IsUniqueConstraintError checks for postgres unique constraint error code
-func IsUniqueConstraintError(err error) bool {
-	if pqErr, ok := err.(*pgx.PgError); ok && pqErr.Code == "23505" {
-		return true
-	}
-	return false
-}
-
+// User returns user pg store
 func (s *PgStore) User() store.UserStore {
 	return s.stores.user
-}
-
-func (s *PgStore) Product() store.ProductStore {
-	return s.stores.product
 }

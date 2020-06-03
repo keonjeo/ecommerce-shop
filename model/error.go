@@ -54,7 +54,7 @@ func (e *AppErr) ToJSON() string {
 
 // ValidationErr holds the key and the message of the field that had errors
 type ValidationErr struct {
-	Key     string `json:"key"`
+	Field   string `json:"field"`
 	Message string `json:"message"`
 }
 
@@ -72,8 +72,8 @@ func (list ValidationErrors) IsZero() bool {
 }
 
 // NewValidationErr creates the validationErr
-func NewValidationErr(key string, l *i18n.Localizer, msg *i18n.Message) *ValidationErr {
-	e := &ValidationErr{Key: key}
+func NewValidationErr(field string, l *i18n.Localizer, msg *i18n.Message) *ValidationErr {
+	e := &ValidationErr{Field: field}
 	e.Message = locale.LocalizeDefaultMessage(l, msg)
 	return e
 }

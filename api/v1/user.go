@@ -19,21 +19,32 @@ func InitUser(a *API) {
 }
 
 func (a *API) createUser(w http.ResponseWriter, r *http.Request) {
-	user, err := model.UserFromJSON(r.Body)
-	if err != nil {
+	u, e := model.UserFromJSON(r.Body)
+	if e != nil {
 		respondError(w, model.NewAppErr("createUser", model.ErrInternal, locale.GetUserLocalizer("en"), msgUserFromJSON, http.StatusInternalServerError, nil))
 		return
 	}
 
-	ruser, err2 := a.app.CreateUser(user)
-	if err2 != nil {
-		respondError(w, err2)
+	user, err := a.app.CreateUser(u)
+	if err != nil {
+		respondError(w, err)
 		return
 	}
 
-	respondJSON(w, http.StatusCreated, ruser)
+	respondJSON(w, http.StatusCreated, user)
 }
 
 func (a *API) login(w http.ResponseWriter, r *http.Request) {
-	respondJSON(w, http.StatusOK, map[string]string{"login": "x"})
+	u, e := model.UserLoginFromJSON(r.Body)
+	if e != nil {
+		respondError(w, model.NewAppErr("login", model.ErrInternal, locale.GetUserLocalizer("en"), msgUserFromJSON, http.StatusInternalServerError, nil))
+		return
+	}
+
+	user, err := a.app.Login(u)
+	if err != nil {
+		respondError(w, err)
+		return
+	}
+	respondJSON(w, http.StatusOK, user)
 }

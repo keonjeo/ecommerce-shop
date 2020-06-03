@@ -84,17 +84,39 @@ type User struct {
 	rawpw           string
 }
 
+// UserLogin is the data for creation
+type UserLogin struct {
+	Email           string    `json:"email"`
+	Password        string    `json:"password"`
+	ConfirmPassword string    `json:"confirm_password"`
+	CreatedAt       time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt       time.Time `json:"updated_at" db:"updated_at"`
+}
+
 // ToJSON converts user to json string
 func (u *User) ToJSON() string {
 	b, _ := json.Marshal(u)
 	return string(b)
 }
 
-// UserFromJSON decodes the input and return a User
+// UserFromJSON decodes the input and return the User
 func UserFromJSON(data io.Reader) (*User, error) {
 	var user *User
 	err := json.NewDecoder(data).Decode(&user)
 	return user, err
+}
+
+// ToJSON converts UserLogin to json string
+func (u *UserLogin) ToJSON() string {
+	b, _ := json.Marshal(u)
+	return string(b)
+}
+
+// UserLoginFromJSON decodes the input and return the User
+func UserLoginFromJSON(data io.Reader) (*UserLogin, error) {
+	var u *UserLogin
+	err := json.NewDecoder(data).Decode(&u)
+	return u, err
 }
 
 // IsValidUsername validates whether username matches the criteria
@@ -155,16 +177,16 @@ func IsValidPasswordCriteria(password string, settings *config.PasswordSettings)
 	}
 
 	if !errs.IsZero() {
-		return NewInvalidUserError(MsgInvalidUser, nil, errs)
+		return NewInvalidUserError(MsgInvalidUser, "", errs)
 	}
 	return nil
 }
 
 // NewInvalidUserError builds the invalid user error
-func NewInvalidUserError(msg *i18n.Message, user *User, errs ValidationErrors) *AppErr {
+func NewInvalidUserError(msg *i18n.Message, userID string, errs ValidationErrors) *AppErr {
 	details := map[string]interface{}{}
-	if user != nil && user.ID != 0 {
-		details["userID"] = user.ID
+	if userID != "" {
+		details["userID"] = userID
 	}
 	if !errs.IsZero() {
 		details["validation"] = map[string]interface{}{"errors": errs}
@@ -189,7 +211,7 @@ func (u *User) Validate() *AppErr {
 	if !IsValidUsername(u.Username) {
 		errs.Add(NewValidationErr("username", l, MsgValidateUsername))
 	}
-	if len(u.Email) > userEmailMaxLength || len(u.Email) == 0 || !is.ValidEmail(u.Email) {
+	if len(u.Email) == 0 || len(u.Email) > userEmailMaxLength || !is.ValidEmail(u.Email) {
 		errs.Add(NewValidationErr("email", l, MsgValidateUserEmail))
 	}
 	if utf8.RuneCountInString(u.Username) > userUsernameMaxRunes {
@@ -204,10 +226,7 @@ func (u *User) Validate() *AppErr {
 	if len(u.rawpw) == 0 || len(u.rawpw) > userPasswordMaxLength {
 		errs.Add(NewValidationErr("password", l, MsgValidateUserPwd))
 	}
-	if len(u.ConfirmPassword) == 0 || len(u.ConfirmPassword) > userPasswordMaxLength {
-		errs.Add(NewValidationErr("confirm_password", l, MsgValidateUserConfirmPwd))
-	}
-	if u.ConfirmPassword != u.rawpw {
+	if len(u.ConfirmPassword) == 0 || len(u.ConfirmPassword) > userPasswordMaxLength || u.ConfirmPassword != u.rawpw {
 		errs.Add(NewValidationErr("confirm_password", l, MsgValidateUserConfirmPwd))
 	}
 	if !IsValidLocale(u.Locale) {
@@ -215,7 +234,25 @@ func (u *User) Validate() *AppErr {
 	}
 
 	if !errs.IsZero() {
-		return NewInvalidUserError(MsgInvalidUser, u, errs)
+		return NewInvalidUserError(MsgInvalidUser, "", errs)
+	}
+	return nil
+}
+
+// Validate validates the UserLogin and returns an error if it doesn't pass criteria
+func (u *UserLogin) Validate() *AppErr {
+	var errs ValidationErrors
+	l := locale.GetUserLocalizer("en")
+
+	if len(u.Email) == 0 || len(u.Email) > userEmailMaxLength || !is.ValidEmail(u.Email) {
+		errs.Add(NewValidationErr("email", l, MsgValidateUserEmail))
+	}
+	if len(u.Password) == 0 || len(u.Password) > userPasswordMaxLength {
+		errs.Add(NewValidationErr("password", l, MsgValidateUserPwd))
+	}
+
+	if !errs.IsZero() {
+		return NewInvalidUserError(MsgInvalidUser, "", errs)
 	}
 	return nil
 }

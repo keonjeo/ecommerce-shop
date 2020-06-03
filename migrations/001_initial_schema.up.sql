@@ -5,7 +5,7 @@ CREATE TABLE public.user (
   first_name character varying(255),
   last_name character varying(255),
   username character varying(255),
-  email character varying(255),
+  email character varying(255) unique,
   password text,
   gender gender,
   locale character varying(5),
