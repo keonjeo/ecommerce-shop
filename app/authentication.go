@@ -121,13 +121,13 @@ func VerifyToken(r *http.Request) (*jwt.Token, *model.AppErr) {
 	tokenString := ExtractToken(r)
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, model.NewAppErr("VerifyToken", model.ErrInvalid, locale.GetUserLocalizer("en"), msgVerifyTokenMethod, http.StatusBadRequest, nil)
+			return nil, model.NewAppErr("VerifyToken", model.ErrInvalid, locale.GetUserLocalizer("en"), msgVerifyTokenMethod, http.StatusUnauthorized, nil)
 		}
 		return []byte(os.Getenv("ACCESS_TOKEN_SECRET")), nil
 	})
 
 	if err != nil {
-		return nil, model.NewAppErr("VerifyToken", model.ErrInvalid, locale.GetUserLocalizer("en"), msgVerifyToken, http.StatusBadRequest, nil)
+		return nil, model.NewAppErr("VerifyToken", model.ErrInvalid, locale.GetUserLocalizer("en"), msgVerifyToken, http.StatusUnauthorized, nil)
 	}
 	return token, nil
 }
@@ -169,28 +169,4 @@ func (a *App) ExtractTokenMetadata(r *http.Request) (*model.AccessData, *model.A
 		return ad, nil
 	}
 	return nil, err
-}
-
-// GetAuth ...
-func (a *App) GetAuth(ad *model.AccessData) (int64, *model.AppErr) {
-	return a.Srv().Store.AccessToken().GetAuth(ad)
-}
-
-// DeleteAuth ...
-func (a *App) DeleteAuth(uuid string) (int64, *model.AppErr) {
-	return a.Srv().Store.AccessToken().DeleteAuth(uuid)
-}
-
-// SessionRequired ...
-func (a *App) SessionRequired(next http.HandlerFunc) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := a.TokenValid(r)
-		if err != nil {
-			w.WriteHeader(403)
-			w.Write([]byte("unauthorized"))
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
 }

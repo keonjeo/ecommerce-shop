@@ -56,3 +56,13 @@ func (a *App) SaveAuth(userID int64, meta *model.TokenMetadata) *model.AppErr {
 	}
 	return nil
 }
+
+// GetAuth ...
+func (a *App) GetAuth(ad *model.AccessData) (int64, *model.AppErr) {
+	return a.Srv().Store.AccessToken().GetAuth(ad)
+}
+
+// DeleteAuth ...
+func (a *App) DeleteAuth(uuid string) (int64, *model.AppErr) {
+	return a.Srv().Store.AccessToken().DeleteAuth(uuid)
+}

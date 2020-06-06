@@ -17,8 +17,8 @@ var (
 func InitUser(a *API) {
 	a.BaseRoutes.Users.Post("/", a.createUser)
 	a.BaseRoutes.Users.Post("/login", a.login)
-	a.BaseRoutes.Users.Post("/logout", a.app.SessionRequired(a.logout))
-	a.BaseRoutes.Users.Get("/test", a.app.SessionRequired(a.test))
+	a.BaseRoutes.Users.Post("/logout", a.AuthRequired(a.logout))
+	a.BaseRoutes.Users.Get("/test", a.AuthRequired(a.test))
 }
 
 func (a *API) createUser(w http.ResponseWriter, r *http.Request) {
