@@ -7,6 +7,8 @@ import (
 	"github.com/dankobgd/ecommerce-shop/app"
 	"github.com/dankobgd/ecommerce-shop/config"
 	"github.com/dankobgd/ecommerce-shop/store/postgres"
+	"github.com/dankobgd/ecommerce-shop/store/redis"
+	"github.com/dankobgd/ecommerce-shop/store/supplier"
 	"github.com/dankobgd/ecommerce-shop/utils/locale"
 	"github.com/dankobgd/ecommerce-shop/zlog"
 	"github.com/spf13/cobra"
@@ -30,9 +32,13 @@ func serverCmdFn(command *cobra.Command, args []string) error {
 		return err
 	}
 
-	pgst := postgres.NewStore(db)
+	pgStore := postgres.NewStore(db)
+	redisClient := redis.NewClient()
+	redisStore := redis.NewStore(redisClient)
 
-	server, err := app.NewServer(pgst)
+	storage := &supplier.Supplier{Pgst: pgStore, Rdst: redisStore}
+	server, err := app.NewServer(storage)
+
 	if err != nil {
 		log.Fatalf("could not create the app server: %v\n", err)
 	}

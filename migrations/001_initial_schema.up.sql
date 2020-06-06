@@ -1,110 +1,114 @@
 CREATE TYPE gender AS ENUM ('m', 'f');
 
 CREATE TABLE public.user (
-  id integer generated always as identity primary key,
-  first_name character varying(255),
-  last_name character varying(255),
-  username character varying(255),
-  email character varying(255) unique,
+  id int generated always as identity primary key,
+  first_name varchar(255),
+  last_name varchar(255),
+  username varchar(255),
+  email varchar(255) unique,
   password text,
   gender gender,
-  locale character varying(5),
+  locale varchar(5),
   avatar_url text,
-  active boolean,
-  email_verified boolean,
-  failed_attempts integer,
-  last_login_at timestamp with time zone,
-  created_at timestamp with time zone,
-  updated_at timestamp with time zone,
-  deleted_at timestamp with time zone
+  active bool,
+  email_verified bool,
+  failed_attempts int,
+  last_login_at timestamptz,
+  created_at timestamptz,
+  updated_at timestamptz,
+  deleted_at timestamptz
 );
 
 CREATE TABLE public.role (
-  id integer generated always as identity primary key,
-  name character varying(30)
+  id int generated always as identity primary key,
+  name varchar(30)
 );
 
 CREATE TABLE public.user_role (
-  user_id integer not null,
-  role_id integer not null,
+  user_id int not null,
+  role_id int not null,
   primary key (user_id, role_id),
   foreign key (user_id) references public.user (id),
   foreign key (role_id) references public.role (id)
 );
 
 CREATE TABLE public.address (
-  id integer generated always as identity primary key,
-  user_id integer,
-  country character varying(255),
-  city character varying(255),
-  address_1 character varying(255),
-  address_2 character varying(255),
-  zip character varying(30),
+  id int generated always as identity primary key,
+  user_id int,
+  country varchar(255),
+  city varchar(255),
+  address_1 varchar(255),
+  address_2 varchar(255),
+  zip varchar(30),
   longitude numeric(11, 8),
   latitude numeric(11, 8),
   foreign key (user_id) references public.user (id)
 );
 
 CREATE TABLE public.item (
-  id integer generated always as identity primary key,
-  user_id integer,
-  type_id integer,
-  size_id integer,
-  color_id integer,
+  id int generated always as identity primary key,
+  user_id int,
+  type_id int,
+  size_id int,
+  color_id int,
   description text,
-  sku character varying(30)
+  sku varchar(30)
 );
 
 CREATE TABLE public.item_info (
-  id integer generated always as identity primary key,
-  item_id integer,
-  price integer,
+  id int generated always as identity primary key,
+  item_id int,
+  price int,
   description text,
   foreign key (item_id) references public.item (id)
 );
 
 CREATE TABLE public.item_images (
-  id integer generated always as identity primary key,
-  item_id integer,
+  id int generated always as identity primary key,
+  item_id int,
   url text,  
   foreign key (item_id) references public.item (id)
 );
 
 CREATE TABLE public.related_item (
-  id integer generated always as identity primary key,
-  item_id integer,
-  related_item_id integer,  
+  id int generated always as identity primary key,
+  item_id int,
+  related_item_id int,  
   foreign key (item_id) references public.item (id),
   foreign key (related_item_id) references public.item (id)
 );
 
 CREATE TABLE public.manufacturer (
-  id integer generated always as identity primary key,
-  name character varying(100),
-  type character varying(50),
+  id int generated always as identity primary key,
+  name varchar(100),
+  type varchar(50),
   email text,
   website_url text,
   address text,
   description text
 );
 
+CREATE TABLE public.user_access_token (
+	id varchar(100),
+	token varchar(100),
+	user_id int,
+	is_active bool
+);
+
 CREATE TABLE public.token (
-  id integer generated always as identity primary key,
-  user_id integer,
+  id int generated always as identity primary key,
+  user_id int,
   reset_token text,
-  reset_expires timestamp with time zone,
+  reset_expires timestamptz,
   verification_token text,
-  verification_expires timestamp with time zone,
-  refresh_token text,
-  refresh_expires timestamp with time zone,
-  refresh_revoked boolean,
+  verification_expires timestamptz,
   foreign key (user_id) references public.user (id)
 );
 
 CREATE TABLE public.color (
-  id integer generated always as identity primary key
+  id int generated always as identity primary key
 );
 
 CREATE TABLE public.size (
-  id integer generated always as identity primary key
+  id int generated always as identity primary key
 );

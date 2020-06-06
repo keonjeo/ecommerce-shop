@@ -1,7 +1,10 @@
 package app
 
 import (
+	"net/http"
+
 	"github.com/dankobgd/ecommerce-shop/model"
+	"github.com/dankobgd/ecommerce-shop/utils/locale"
 	"github.com/dankobgd/ecommerce-shop/zlog"
 )
 
@@ -17,6 +20,7 @@ func (a *App) CreateUser(u *model.User) (*model.User, *model.AppErr) {
 	}
 
 	user, err := a.Srv().Store.User().Save(u)
+
 	if err != nil {
 		a.log.Error(err.Error(), zlog.Err(err))
 		return nil, err
@@ -43,4 +47,12 @@ func (a *App) Login(u *model.UserLogin) (*model.User, *model.AppErr) {
 
 	user.Sanitize(map[string]bool{})
 	return user, nil
+}
+
+// SaveAuth saves the user auth information
+func (a *App) SaveAuth(userID int64, meta *model.TokenMetadata) *model.AppErr {
+	if err := a.Srv().Store.AccessToken().SaveAuth(userID, meta); err != nil {
+		return model.NewAppErr("createUser", model.ErrInternal, locale.GetUserLocalizer("en"), model.MsgInvalidUser, http.StatusInternalServerError, nil)
+	}
+	return nil
 }

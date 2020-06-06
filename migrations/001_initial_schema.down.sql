@@ -12,6 +12,8 @@ DROP TABLE public.item_info;
 
 DROP TABLE public.item;
 
+DROP TABLE public.user_access_token;
+
 DROP TABLE public.token;
 
 DROP TABLE public.user_role;

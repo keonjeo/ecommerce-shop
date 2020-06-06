@@ -35,16 +35,16 @@ func (s *DatabaseSettings) SetDefaults() {
 // SetDefaults sets default values for AuthSettings
 func (s *AuthSettings) SetDefaults() {
 	if s.AccessTokenSecret == "" {
-		s.AccessTokenSecret = ""
+		s.AccessTokenSecret = "secret1"
 	}
 	if s.RefreshTokenSecret == "" {
-		s.RefreshTokenSecret = ""
+		s.RefreshTokenSecret = "secret2"
 	}
 	if s.ResetPasswordValidFor == 0 {
 		s.ResetPasswordValidFor = 0
 	}
 	if s.VerificationRequired == false {
-		s.VerificationRequired = false
+		s.VerificationRequired = true
 	}
 }
 

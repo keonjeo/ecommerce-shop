@@ -3,7 +3,6 @@ package postgres
 import (
 	"log"
 
-	"github.com/dankobgd/ecommerce-shop/store"
 	"github.com/jackc/pgx"
 	_ "github.com/jackc/pgx/stdlib" // pg driver
 	"github.com/jmoiron/sqlx"
@@ -24,12 +23,7 @@ func IsUniqueConstraintError(err error) bool {
 
 // PgStore has the pg db driver
 type PgStore struct {
-	db     *sqlx.DB
-	stores providedStores
-}
-
-type providedStores struct {
-	user store.UserStore
+	db *sqlx.DB
 }
 
 // Connect establishes connection to postgres db
@@ -45,14 +39,5 @@ func Connect() (*sqlx.DB, error) {
 
 // NewStore initializes postgres based store
 func NewStore(db *sqlx.DB) *PgStore {
-	pgst := &PgStore{db: db}
-
-	pgst.stores.user = newPgUserStore(pgst)
-
-	return pgst
-}
-
-// User returns user pg store
-func (s *PgStore) User() store.UserStore {
-	return s.stores.user
+	return &PgStore{db: db}
 }

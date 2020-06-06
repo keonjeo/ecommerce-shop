@@ -64,23 +64,23 @@ var (
 
 // User represents the shop user model
 type User struct {
-	ID              int       `json:"id" db:"id"`
-	FirstName       string    `json:"first_name" db:"first_name"`
-	LastName        string    `json:"last_name" db:"last_name"`
-	Username        string    `json:"username" db:"username"`
-	Email           string    `json:"email" db:"email"`
-	Password        string    `json:"password,omitempty" db:"password"`
-	ConfirmPassword string    `json:"confirm_password,omitempty"`
-	Gender          *string   `json:"gender" db:"gender"`
-	Locale          string    `json:"locale" db:"locale"`
-	AvatarURL       string    `json:"avatar_url" db:"avatar_url"`
-	Active          bool      `json:"active" db:"active"`
-	EmailVerified   bool      `json:"email_verified" db:"email_verified"`
-	FailedAttempts  int       `json:"failed_attempts" db:"failed_attempts"`
-	LastLoginAt     time.Time `json:"last_login_at" db:"last_login_at"`
-	CreatedAt       time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at" db:"updated_at"`
-	DeletedAt       time.Time `json:"deleted_at" db:"deleted_at"`
+	ID              int64      `json:"id" db:"id"`
+	FirstName       string     `json:"first_name" db:"first_name"`
+	LastName        string     `json:"last_name" db:"last_name"`
+	Username        string     `json:"username" db:"username"`
+	Email           string     `json:"email" db:"email"`
+	Password        string     `json:"password,omitempty" db:"password"`
+	ConfirmPassword string     `json:"confirm_password,omitempty"`
+	Gender          *string    `json:"gender" db:"gender"`
+	Locale          string     `json:"locale" db:"locale"`
+	AvatarURL       string     `json:"avatar_url" db:"avatar_url"`
+	Active          bool       `json:"active" db:"active"`
+	EmailVerified   bool       `json:"email_verified" db:"email_verified"`
+	FailedAttempts  int        `json:"failed_attempts,omitempty" db:"failed_attempts"`
+	LastLoginAt     time.Time  `json:"last_login_at" db:"last_login_at"`
+	CreatedAt       time.Time  `json:"created_at" db:"created_at"`
+	UpdatedAt       time.Time  `json:"updated_at" db:"updated_at"`
+	DeletedAt       *time.Time `json:"deleted_at" db:"deleted_at"`
 	rawpw           string
 }
 
@@ -199,7 +199,7 @@ func (u *User) Validate() *AppErr {
 	var errs ValidationErrors
 	l := locale.GetUserLocalizer("en")
 
-	if u.ID < 0 {
+	if u.ID != 0 {
 		errs.Add(NewValidationErr("id", l, MsgValidateUserID))
 	}
 	if u.CreatedAt.IsZero() {
@@ -261,6 +261,8 @@ func (u *UserLogin) Validate() *AppErr {
 func (u *User) Sanitize(options map[string]bool) {
 	u.rawpw = ""
 	u.Password = ""
+	u.ConfirmPassword = ""
+	u.FailedAttempts = 0
 	if len(options) != 0 && !options["email"] {
 		u.Email = ""
 	}
@@ -273,6 +275,9 @@ func (u *User) PreSave() {
 	u.Email = NormalizeEmail(u.Email)
 	u.CreatedAt = time.Now()
 	u.UpdatedAt = u.CreatedAt
+	u.LastLoginAt = u.CreatedAt
+	u.Active = true
+	u.EmailVerified = false
 
 	if u.Locale == "" {
 		u.Locale = userDefaultLocale

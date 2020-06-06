@@ -31,6 +31,16 @@ services:
     networks:
       - net
 
+  # Redis
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - net
+
   # Database client
   adminer:
     image: adminer

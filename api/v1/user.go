@@ -2,6 +2,7 @@ package apiv1
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/dankobgd/ecommerce-shop/model"
 	"github.com/dankobgd/ecommerce-shop/utils/locale"
@@ -16,6 +17,8 @@ var (
 func InitUser(a *API) {
 	a.BaseRoutes.Users.Post("/", a.createUser)
 	a.BaseRoutes.Users.Post("/login", a.login)
+	a.BaseRoutes.Users.Post("/logout", a.app.SessionRequired(a.logout))
+	a.BaseRoutes.Users.Get("/test", a.app.SessionRequired(a.test))
 }
 
 func (a *API) createUser(w http.ResponseWriter, r *http.Request) {
@@ -30,6 +33,17 @@ func (a *API) createUser(w http.ResponseWriter, r *http.Request) {
 		respondError(w, err)
 		return
 	}
+
+	tokenMeta, err := a.app.IssueTokens(user.ID)
+	if err != nil {
+		respondError(w, err)
+	}
+
+	if err := a.app.SaveAuth(user.ID, tokenMeta); err != nil {
+		respondError(w, err)
+	}
+
+	a.app.AttachSessionCookies(w, tokenMeta)
 
 	respondJSON(w, http.StatusCreated, user)
 }
@@ -46,5 +60,46 @@ func (a *API) login(w http.ResponseWriter, r *http.Request) {
 		respondError(w, err)
 		return
 	}
+
+	tokenMeta, err := a.app.IssueTokens(user.ID)
+	if err != nil {
+		respondError(w, err)
+	}
+
+	if err := a.app.SaveAuth(user.ID, tokenMeta); err != nil {
+		respondError(w, err)
+	}
+
+	a.app.AttachSessionCookies(w, tokenMeta)
+
 	respondJSON(w, http.StatusOK, user)
+}
+
+func (a *API) logout(w http.ResponseWriter, r *http.Request) {
+	ad, err := a.app.ExtractTokenMetadata(r)
+	if err != nil {
+		w.Write([]byte("unauthorized"))
+		return
+	}
+	deleted, err := a.app.DeleteAuth(ad.AccessUUID)
+	if err != nil || deleted == 0 {
+		w.Write([]byte("unauthorized"))
+		return
+	}
+	w.Write([]byte("success logout"))
+}
+
+func (a *API) test(w http.ResponseWriter, r *http.Request) {
+	ad, err := a.app.ExtractTokenMetadata(r)
+	if err != nil {
+		w.Write([]byte("unaothorized"))
+		return
+	}
+	userID, err := a.app.GetAuth(ad)
+	if err != nil {
+		w.Write([]byte("unaothorized"))
+		return
+	}
+
+	w.Write([]byte("userID: " + strconv.FormatInt(userID, 10)))
 }
